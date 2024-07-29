@@ -1,65 +1,115 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>내가 쓴 게시글</title>
-    <link rel="stylesheet" th:href="@{/css/myPost.css}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>내가 쓴 게시글</title>
+  <link rel="stylesheet" th:href="@{/css/myPost.css}">
 </head>
 <body>
 <header>
-    <h1 style="display: none">스토리웨이브 사이트 홈 화면</h1>
-    <div class="nav_bar">
-        <a class="storywave_logo" href="">
-            <img class="storywave_img" src="/images/StoryWaveLogo.png" alt="홈 화면 이동">
-        </a>
-        <nav class="menu_cont">
-            <form class="search_form">
-                <label for="search-input" style="display:none;">검색</label>
-                <input id="search-input" class="search_box" type="search" name="search_input" placeholder="검색">
-                <button id="search_btn"><img class="search_img" src="/images/search.png" alt="검색 버튼"></button>
-            </form>
-            <div class="menu_container">
-                <div class="menu_cont2">
-                    <a href="#">공지사항</a>
-                    <a href="#">영화 <span class="sub-text">리뷰/서평</span></a>
-                    <a href="#">도서 <span class="sub-text">리뷰/서평</span></a>
-                </div>
-                <div class="user_menu">
-                    <a href="#">마이페이지</a>
-                    <span>|</span>
-                    <a href="#">로그인</a>
-                </div>
-            </div>
-        </nav>
-    </div>
-    <hr class="firstLine">
+  <h1 style="display: none">스토리웨이브 사이트 홈 화면</h1>
+  <div class="nav_bar">
+    <a class="storywave_logo" href="">
+      <img class="storywave_img" src="/images/StoryWaveLogo.png" alt="홈 화면 이동">
+    </a>
+    <nav class="menu_cont">
+      <form class="search_form">
+        <label for="search-input" style="display:none;">검색</label>
+        <input id="search-input" class="search_box" type="search" name="search_input" placeholder="검색">
+        <button id="search_btn"><img class="search_img" src="/images/search.png" alt="검색 버튼"></button>
+      </form>
+      <div class="menu_container">
+        <div class="menu_cont2">
+          <a href="#">공지사항</a>
+          <a href="#">영화 <span class="sub-text">리뷰/서평</span></a>
+          <a href="#">도서 <span class="sub-text">리뷰/서평</span></a>
+        </div>
+        <div class="user_menu">
+          <a href="#">마이페이지</a>
+          <span>|</span>
+          <a href="#">로그인</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <hr class="firstLine">
 </header>
 
 <main>
-    <h2>내 게시물</h2>
-    <table class="post-table">
-        <thead>
-        <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>글쓴이</th>
-            <th>날짜</th>
-            <th>공감</th>
-            <th>댓글</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="post : ${posts}">
-            <td th:text="${post.id}"></td>
-            <td th:text="${post.title}"></td>
-            <td th:text="${post.userId}"></td>
-            <td th:text="${post.createdAt}"></td>
-            <td th:text="${post.thumbs}"></td>
-            <td th:text="${post.comments}"></td>
-        </tr>
-        </tbody>
-    </table>
+  <h2>내 게시물</h2>
+  <table class="post-table">
+    <thead>
+    <tr>
+      <th>번호</th>
+      <th>제목</th>
+      <th>글쓴이</th>
+      <th>날짜</th>
+      <th>공감</th>
+      <th>댓글</th>
+    </tr>
+    </thead>
+    <tbody id="post-list">
+    <!-- 게시글 목록이 여기 표시 -->
+    </tbody>
+  </table>
+  <div class="pagination" id="pagination">
+    <!-- 페이지네이션 버튼이 여기 표시됨 -->
+  </div>
 </main>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const postList = document.getElementById('post-list');
+    const pagination = document.getElementById('pagination');
+    const postsPerPage = 10; // 유지하는 페이지당 게시글 수
+    let currentPage = 1;
+
+    // 예제 데이터 - 실제 데이터는 서버에서 받아옵니다.
+    const posts = [
+      { id: 1, title: "Understanding Spring Boot", author: "John Doe", date: "2023-01-15", likes: 30, comments: 5 },
+      { id: 2, title: "Getting Started with MySQL", author: "Jane Smith", date: "2023-02-20", likes: 40, comments: 8 },
+      // 여기에 추가 데이터...
+    ];
+
+    function displayPosts() {
+      postList.innerHTML = '';
+      const startIndex = (currentPage - 1) * postsPerPage;
+      const endIndex = Math.min(startIndex + postsPerPage, posts.length);
+
+      for (let i = startIndex; i < endIndex; i++) {
+        const post = posts[i];
+        postList.innerHTML += `
+                <tr>
+                    <td>${post.id}</td>
+                    <td>${post.title}</td>
+                    <td>${post.author}</td>
+                    <td>${new Date(post.date).toLocaleDateString()}</td>
+                    <td>${post.likes}</td>
+                    <td>${post.comments}</td>
+                </tr>
+            `;
+      }
+      displayPagination();
+    }
+
+    function displayPagination() {
+      const totalPages = Math.ceil(posts.length / postsPerPage);
+      pagination.innerHTML = '';
+
+      for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.className = i === currentPage ? 'active' : '';
+        button.addEventListener('click', () => {
+          currentPage = i;
+          displayPosts();
+        });
+        pagination.appendChild(button);
+      }
+    }
+
+    displayPosts();
+  });
+</script>
 </body>
 </html>

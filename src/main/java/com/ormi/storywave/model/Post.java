@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -16,14 +17,16 @@ public class Post {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  private Integer postTypeId;
   private String title;
-  private String content;
-  private Integer userId;
+  private String author;
+
+  @Temporal(TemporalType.DATE)
+  private Date date;
+
+  private Integer likes;
+  private Integer comments;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
-  private Integer thumbs;
-  private Integer comments; // 댓글 수 필드 추가
 
   @PrePersist
   protected void onCreate() {
