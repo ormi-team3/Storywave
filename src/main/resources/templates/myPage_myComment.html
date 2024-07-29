@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내가 쓴 댓글</title>
+    <link rel="stylesheet" th:href="@{/css/myComment.css}">
+</head>
+<body>
+<header>
+    <h1 style="display: none">스토리웨이브 사이트 홈 화면</h1>
+    <div class="nav_bar">
+        <a class="storywave_logo" href="">
+            <img class="storywave_img" src="/images/StoryWaveLogo.png" alt="홈 화면 이동">
+        </a>
+        <nav class="menu_cont">
+            <form class="search_form">
+                <label for="search-input" style="display:none;">검색</label>
+                <input id="search-input" class="search_box" type="search" name="search_input" placeholder="검색">
+                <button id="search_btn"><img class="search_img" src="/images/search.png" alt="검색 버튼"></button>
+            </form>
+            <div class="menu_container">
+                <div class="menu_cont2">
+                    <a href="#">공지사항</a>
+                    <a href="#">영화 <span class="sub-text">리뷰/서평</span></a>
+                    <a href="#">도서 <span class="sub-text">리뷰/서평</span></a>
+                </div>
+                <div class="user_menu">
+                    <a href="#">마이페이지</a>
+                    <span>|</span>
+                    <a href="#">로그인</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <hr class="firstLine">
+</header>
+
+<main>
+    <h2>내 댓글</h2>
+    <table class="post-table">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>글쓴이</th>
+            <th>날짜</th>
+        </tr>
+        </thead>
+        <tbody id="post-list">
+        <!-- 게시글 목록이 여기 표시됨 -->
+        </tbody>
+    </table>
+    <div class="pagination" id="pagination">
+        <!-- 페이지네이션 버튼이 여기 표시됨 -->
+    </div>
+
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const postList = document.getElementById('post-list');
+        const pagination = document.getElementById('pagination');
+        const postsPerPage = 10; // 페이지당 게시글 수
+        let currentPage = 1;
+
+        // 더미 데이터 예시
+        const posts = [
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.1</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.2</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.3</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.4</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.5</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.6</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.7</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.8</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.9</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.10</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+            {
+                title: '<strong>내가 쓴 댓글이 보입니다.11</strong>',
+                author: '닉네임',
+                date: '2000-00-00',
+                description: '<span class="description">제목이 들어옵니다</span>'
+            },
+
+        ];
+
+        function displayPosts() {
+            postList.innerHTML = '';
+            const startIndex = (currentPage - 1) * postsPerPage;
+            const endIndex = Math.min(startIndex + postsPerPage, posts.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const post = posts[i];
+                postList.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${post.title}<br>${post.description}</td>
+            <td>${post.author}</td>
+            <td>${post.date}</td>
+          </tr>
+        `;
+            }
+            displayPagination();
+        }
+
+        function displayPagination() {
+            const totalPages = Math.ceil(posts.length / postsPerPage);
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.className = i === currentPage ? 'active' : '';
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    displayPosts();
+                });
+                pagination.appendChild(button);
+            }
+        }
+
+        displayPosts();
+    });
+</script>
+</body>
+</html>
