@@ -48,130 +48,25 @@
         </tr>
         </thead>
         <tbody id="post-list">
-        <!-- 게시글 목록이 여기 표시됨 -->
+        <tr th:each="post : ${posts}">
+            <td th:text="${post.id}">1</td>
+            <td th:text="${post.title}">내가 쓴 댓글이 보입니다.</td>
+            <td th:text="${post.author}">닉네임</td>
+            <td th:text="${post.date}">2000-00-00</td>
+        </tr>
         </tbody>
+
     </table>
-    <div class="pagination" id="pagination">
-        <!-- 페이지네이션 버튼이 여기 표시됨 -->
+    <div class="pagination">
+        <ul class="pagination-list">
+            <li th:each="page, iterStat : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${page == currentPage} ? ' active' : ''">
+                <a th:href="@{/myPage_myPost(page=${page})}"
+                   th:text="${page}"></a>
+            </li>
+        </ul>
     </div>
 
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const postList = document.getElementById('post-list');
-        const pagination = document.getElementById('pagination');
-        const postsPerPage = 10; // 페이지당 게시글 수
-        let currentPage = 1;
-
-        // 더미 데이터 예시
-        const posts = [
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.1</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.2</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.3</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.4</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.5</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.6</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.7</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.8</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.9</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.10</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-            {
-                title: '<strong>내가 쓴 댓글이 보입니다.11</strong>',
-                author: '닉네임',
-                date: '2000-00-00',
-                description: '<span class="description">제목이 들어옵니다</span>'
-            },
-
-        ];
-
-        function displayPosts() {
-            postList.innerHTML = '';
-            const startIndex = (currentPage - 1) * postsPerPage;
-            const endIndex = Math.min(startIndex + postsPerPage, posts.length);
-
-            for (let i = startIndex; i < endIndex; i++) {
-                const post = posts[i];
-                postList.innerHTML += `
-          <tr>
-            <td>${i + 1}</td>
-            <td>${post.title}<br>${post.description}</td>
-            <td>${post.author}</td>
-            <td>${post.date}</td>
-          </tr>
-        `;
-            }
-            displayPagination();
-        }
-
-        function displayPagination() {
-            const totalPages = Math.ceil(posts.length / postsPerPage);
-            pagination.innerHTML = '';
-
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                button.className = i === currentPage ? 'active' : '';
-                button.addEventListener('click', () => {
-                    currentPage = i;
-                    displayPosts();
-                });
-                pagination.appendChild(button);
-            }
-        }
-
-        displayPosts();
-    });
-</script>
 </body>
 </html>

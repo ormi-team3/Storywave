@@ -5,6 +5,7 @@ import com.ormi.storywave.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -12,14 +13,21 @@ import java.util.List;
 @RequestMapping("/comments")
 public class CommentController {
 
-  @Autowired private CommentService commentService;
+  private final CommentService commentService;
 
-  @GetMapping("/comments")
-  public String showComments(Model model) {
-    List<Comment> comments = commentService.getAllComments();
-    model.addAttribute("comments", comments);
-    return "myPage_myComment";
+  @Autowired
+  public CommentController(CommentService commentService) {
+    this.commentService = commentService;
   }
+
+  @GetMapping("/myPage_myComment")
+  public ModelAndView showComments() {
+    List<Comment> comments = commentService.getAllComments();
+    ModelAndView mav = new ModelAndView("myPage_myComment");
+    mav.addObject("posts", comments);
+    return mav;
+  }
+
 
   @GetMapping
   public List<Comment> getAllComments() {
