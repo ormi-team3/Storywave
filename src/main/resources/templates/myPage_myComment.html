@@ -46,13 +46,15 @@
             <th>글쓴이</th>
             <th>날짜</th>
         </tr>
-        </thead>
-        <tbody id="post-list">
-        <tr th:each="post : ${posts}">
-            <td th:text="${post.id}">1</td>
-            <td th:text="${post.title}">내가 쓴 댓글이 보입니다.</td>
-            <td th:text="${post.author}">닉네임</td>
-            <td th:text="${post.date}">2000-00-00</td>
+        <tbody id="comment-list">
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.id}"></td>
+            <td>
+                <div class="title" th:text="${comment.comment}"></div>
+                <span th:text="${comment.title}"></span>
+            </td>
+            <td th:text="${comment.author}"></td>
+            <td th:text="${comment.date}"></td>
         </tr>
         </tbody>
 
@@ -61,7 +63,7 @@
         <ul class="pagination-list">
             <li th:each="page, iterStat : ${#numbers.sequence(1, totalPages)}"
                 th:classappend="${page == currentPage} ? ' active' : ''">
-                <a th:href="@{/myPage_myPost(page=${page})}"
+                <a th:href="@{/myPage_myComment(page=${page})}"
                    th:text="${page}"></a>
             </li>
         </ul>

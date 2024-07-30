@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,16 +19,20 @@ public class Post {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  private String title;
-  private String author;
+  private String title; // 제목
+  private String author; // 글쓴이
 
   @Temporal(TemporalType.DATE)
-  private Date date;
+  private Date date; // 날짜
 
-  private Integer likes;
-  private Integer comments;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
+  private Integer likes; // 공감 수
+  private LocalDateTime createdAt; // 생성 시각
+  private LocalDateTime updatedAt; // 수정 시각
+  private Integer postId;
+  private Integer userId;
+  private Integer comments; // 댓글 수
+  @ElementCollection
+  private List<String> commentContents; // 여러 댓글 내용 저장
 
   @PrePersist
   protected void onCreate() {

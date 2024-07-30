@@ -20,7 +20,10 @@ public class Comment {
 
   private Integer postId;
   private Integer userId;
-  private String content;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
+  private String comment; // 댓글 내용
+  private LocalDateTime createdAt; // 생성 시각
+  private LocalDateTime updatedAt; // 수정 시각
+  private String title; // 제목
+  private String author; // 작성자
+  private LocalDateTime date; // 추가된 필드: 날짜
 }
