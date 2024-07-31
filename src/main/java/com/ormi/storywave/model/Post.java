@@ -28,11 +28,9 @@ public class Post {
   private Integer likes; // 공감 수
   private LocalDateTime createdAt; // 생성 시각
   private LocalDateTime updatedAt; // 수정 시각
-  private Integer postId;
-  private Integer userId;
-  private Integer comments; // 댓글 수
-  @ElementCollection
-  private List<String> commentContents; // 여러 댓글 내용 저장
+
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Comment> comments; // 댓글 리스트
 
   @PrePersist
   protected void onCreate() {

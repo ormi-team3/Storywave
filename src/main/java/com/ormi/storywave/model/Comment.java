@@ -1,14 +1,11 @@
 package com.ormi.storywave.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Setter
@@ -18,12 +15,22 @@ public class Comment {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  private Integer postId;
-  private Integer userId;
   private String comment; // 댓글 내용
+
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private Post post; // Post 엔티티와의 관계
+
   private LocalDateTime createdAt; // 생성 시각
   private LocalDateTime updatedAt; // 수정 시각
-  private String title; // 제목
-  private String author; // 작성자
-  private LocalDateTime date; // 추가된 필드: 날짜
+
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
+  }
 }

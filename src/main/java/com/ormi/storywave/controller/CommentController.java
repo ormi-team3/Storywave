@@ -21,6 +21,7 @@ public class CommentController {
       Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
     int pageSize = 10;
     Page<Comment> commentPage = commentService.findPaginated(page, pageSize);
+
     model.addAttribute("comments", commentPage.getContent());
     model.addAttribute("currentPage", page);
     model.addAttribute("totalPages", commentPage.getTotalPages());
