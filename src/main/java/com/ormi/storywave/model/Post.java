@@ -29,8 +29,7 @@ public class Post {
   private LocalDateTime createdAt; // 생성 시각
   private LocalDateTime updatedAt; // 수정 시각
 
-  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<Comment> comments; // 댓글 리스트
+  private Integer comments; // 댓글 수를 나타냄
 
   @PrePersist
   protected void onCreate() {
