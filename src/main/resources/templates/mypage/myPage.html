@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko" ><!--xmlns:th="http://www.thymeleaf.org">-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이 페이지</title>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            background-color: #EDE7DF;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            display: flex;
+            position: fixed;
+            flex-direction: column;
+            width: 100%;
+            height: 69px;
+            padding: 15px 0;
+            background-color: #EDE7DF;
+            z-index: 10;
+        }
+
+        .nav_bar {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            background-color: #EDE7DF;
+            z-index: 10;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        h3 {
+            font-size: 10pt;
+        }
+
+        span {
+            font-size: 8pt;
+        }
+
+        .menu_cont {
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+            font-size: 10pt;
+        }
+
+        .storywave_img {
+            height: 85px;
+        }
+
+        .menu_cont2 {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-self: flex-end;
+            padding-top: 28px;
+            gap: 28px;
+        }
+
+        #search-input {
+            padding: 3px 10px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            vertical-align: bottom;
+        }
+
+        #search_btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            height: 14px;
+        }
+
+        .search_img {
+            height: 14px;
+        }
+
+        .user_menu {
+            display: flex;
+            align-self: flex-end;
+        }
+
+        .firstLine {
+            display: inline-flex;
+            border-style:solid;
+        }
+
+        .myPage_btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+        }
+
+        .myPage_btn > a {
+            height : 50px;
+            width: 25%;
+            border : 3px solid rgb(94, 94, 94);
+            background-color: white;
+            border-radius: 4px;
+            margin: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+
+        main {
+            padding-top: 120px;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+<header>
+    <h1 style="display: none">스토리웨이브 사이트 홈 화면</h1>
+    <div class="nav_bar">
+        <a class="storywave_logo" href="">
+            <img class="storywave_img" src="StoryWaveLogo.png" alt="홈 화면 이동">
+        </a>
+        <nav class="menu_cont">
+            <form class="search_form">
+                <label for="search-input"></label>
+                <input id="search-input" class="search_box" type="search" name="search_input">
+                <button id="search_btn"><img class="search_img" src="search.png" alt="검색 버튼"></button>
+            </form>
+            <div class="menu_cont2">
+                <!--각 링크 공유해야함-->
+                <a href="#">공지사항</a>
+                <a href="#">영화 <span>리뷰/서평</span></a>
+                <a href="#">도서 <span>리뷰/서평</span></a>
+                <div class="user_menu">
+                    <a href="#">회원가입</a>
+                    <span>|</span>
+                    <a href="#">로그인</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <hr class="firstLine">
+</header>
+
+<main>
+    <div class="myPage_btn">
+        <a href="myPage_myPost.html"> 내 게시물 </a>
+        <a href="myPage_myComment.html"> 내 댓글 </a>
+        <a href="#">  회원정보 수정 </a>
+        <a href="userList.html">회원 관리</a>
+        <a href="myPage_quit.html">  회원 탈퇴 </a>
+    </div>
+
+
+    <script>
+
+    </script>
+</main>
+</body>
+</html>
