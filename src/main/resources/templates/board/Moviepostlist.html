@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>도서 게시판</title>
+  <title>영화 게시판</title>
 
   <style>
     * {
@@ -37,6 +37,7 @@
     a {
       text-decoration: none;
       color: black;
+      cursor: pointer;
     }
     h3 {
       font-size: 10pt;
@@ -221,19 +222,19 @@
 <header>
   <h1 style="display: none">스토리웨이브 사이트 홈 화면</h1>
   <div class="nav_bar">
-    <a class="storywave_logo" href="">
-      <img class="storywave_img" src="StoryWaveLogo.png" alt="홈 화면 이동">
+    <a class="storywave_logo" href="../home.html">
+      <img class="storywave_img" src="../../static/photo/StoryWaveLogo.png" alt="홈 화면 이동">
     </a>
     <nav class="menu_cont">
       <form class="search_form">
         <label for="search-input"></label>
         <input id="search-input" class="search_box" type="search" name="search_input">
-        <button id="search_btn"><img class="search_img" src="search.png" alt="검색 버튼"></button>
+        <button id="search_btn"><img class="search_img" src="../../static/photo/search.png" alt="검색 버튼"></button>
       </form>
       <div class="menu_cont2">
-        <a th:href="@{/notices}">공지사항</a>
-        <a th:href="@{/movies}">영화 <span>리뷰/서평</span></a>
-        <a th:href="@{/books}">도서 <span>리뷰/서평</span></a>
+        <a href="Noticepostlist.html">공지사항</a>
+        <a href="Moviepostlist.html">영화 <span>리뷰/서평</span></a>
+        <a href="Bookpostlist.html">도서 <span>리뷰/서평</span></a>
         <div class="user_menu">
           <a th:href="@{/register}">회원가입</a>
           <span>|</span>
@@ -244,20 +245,22 @@
   </div>
   <hr class="firstLine">
 </header>
-
 <main>
-  <span id="categroy">도서</span>
+  <span id="categroy">영화</span>
   <span>리뷰/서평</span>
   <div class="filter-section">
     <ul class="category-list">
       <li><input type="checkbox" id="all" value="all" th:checked="${categoryFilter == null}"><label for="all">전체</label></li>
-      <li><input type="checkbox" id="novel" value="novel"th:checked="${categoryFilter.contains('novel')}"><label for="novel">소설/시</label></li>
-      <li><input type="checkbox" id="essay" value="essay" th:checked="${categoryFilter.contains('essay')}"><label for="essay">에세이</label></li>
-      <li><input type="checkbox" id="humanity" value="humanity" th:checked="${categoryFilter.contains('humanity')}"><label for="humanity">인문</label></li>
-      <li><input type="checkbox" id="economy" value="economy" th:checked="${categoryFilter.contains('economy')}"><label for="economy">경제/경영</label></li>
-      <li><input type="checkbox" id="etc" value="etc" th:checked="${categoryFilter.contains('etc')}"><label for="etc">기타</label></li>
+      <li><input type="checkbox" id="action" value="action" th:checked="${categoryFilter.contains('action')}"><label for="action">액션</label></li>
+      <li><input type="checkbox" id="comedy" value="comedy" th:checked="${categoryFilter.contains('comedy')}"><label for="comedy">코미디</label></li>
+      <li><input type="checkbox" id="crime" value="crime" th:checked="${categoryFilter.contains('crime')}"><label for="crime">범죄</label></li>
+      <li><input type="checkbox" id="horror" value="horror" th:checked="${categoryFilter.contains('horror')}"><label for="horror">공포</label></li>
+      <li><input type="checkbox" id="romance" value="romance" th:checked="${categoryFilter.contains('romance')}"><label for="romance">로맨스</label></li>
+      <li><input type="checkbox" id="animation" value="animation" th:checked="${categoryFilter.contains('animation')}"><label for="animation">애니메이션</label></li>
+      <li><input type="checkbox" id="documentary" value="documentary" th:checked="${categoryFilter.contains('documentary')}"><label for="documentary">다큐멘터리</label></li>
+      <li><input type="checkbox" id="sci-fi-fantasy" value="sci-fi-fantasy" th:checked="${categoryFilter.contains('sci-fi-fantasy')}"><label for="sci-fi-fantasy">SF/판타지</label></li>
     </ul>
-    <button class="write-button" onclick="location.href='Bookpostwrite.html'">글쓰기</button>
+    <button class="write-button" onclick="location.href='Moviepostwrite.html'">글쓰기</button>
   </div>
   <table class="post-table">
     <thead>
@@ -272,14 +275,6 @@
     </thead>
     <tbody id="post-list">
     <!-- 게시글 목록이 여기 표시 -->
-    <tr th:each="post, iterStat : ${postSummaries}">
-      <td th:text="${iterStat.index + 1}">번호</td>
-      <td><a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">제목</a></td>
-      <td th:text="${post.author}">글쓴이</td>
-      <td th:text="${#dates.format(post.updated_at, 'yyyy-MM-dd')}">날짜</td>
-      <td th:text="${post.thumbs}">공감수</td>
-      <td th:text="${post.comments}">댓글수</td>
-    </tr>
     </tbody>
   </table>
   <div class="pagination" id="pagination">
@@ -315,7 +310,7 @@
 
     // 게시글 데이터 가져오기
     function fetchPosts() {
-      fetch('http://localhost:8081/post/2')  // 절대경로를 사용하여 요청
+      fetch('http://localhost:8081/post/1')  // 절대경로를 사용하여 요청
               .then(response => response.json())
               .then(data => {
                 totalPosts = data;

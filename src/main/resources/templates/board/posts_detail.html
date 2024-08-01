@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 상세 보기</title>
     <link rel="icon" href="/photo/StoryWaveLogo.png" type="image/x-icon">
-    <link rel="stylesheet" th:href="@{/posts_detailCss.css}">
+    <link rel="stylesheet" href="../../static/posts_detailCss.css">
 </head>
 <body>
 <header>
@@ -13,18 +13,18 @@
     <h1 class="post_num" style="display: none" th:text="${posts.id}">게시물 상세 보기</h1>
     <div class="nav_bar">
         <a class="storywave_logo">
-            <img class="storywave_img" th:src="@{/photo/StoryWaveLogo.png}" alt="홈 화면 이동">
+            <img class="storywave_img" src="../../static/photo/StoryWaveLogo.png" alt="홈 화면 이동">
         </a>
         <nav class="menu_cont">
             <form class="search_form">
                 <label for="search-input"></label>
                 <input id="search-input" class="search_box" type="search" name="search_input">
-                <button id="search_btn"><img class="search_img" th:src="@{/photo/search.png}" alt="검색 버튼"></button>
+                <button id="search_btn"><img class="search_img" src="../../static/photo/search.png" alt="검색 버튼"></button>
             </form>
             <div class="menu_cont2">
-                <a>공지사항</a>
-                <a>영화 <span class="menu_detail">리뷰/서평</span></a>
-                <a>도서 <span class="menu_detail">리뷰/서평</span></a>
+                <a href="Noticepostlist.html">공지사항</a>
+                <a href="Moviepostlist.html">영화 <span class="menu_detail">리뷰/서평</span></a>
+                <a href="Bookpostlist.html">도서 <span class="menu_detail">리뷰/서평</span></a>
                 <div class="user_menu">
                     <!--                    <a th:href="@{/mypage.html}" th:text="">마이페이지</a>-->
                     <a href="../mypage.html">마이페이지</a>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>공지사항 게시글 작성 페이지</title>
+  <title>도서 게시글 작성 페이지</title>
   <style>
     * {
       padding: 0;
@@ -37,6 +37,7 @@
     a {
       text-decoration: none;
       color: black;
+      cursor:pointer;
     }
 
     h3 {
@@ -243,19 +244,19 @@
   <!-- 헤더 -->
   <h1 style="display: none">스토리웨이브 사이트 홈 화면</h1>
   <div class="nav_bar">
-    <a class="storywave_logo" href="">
-      <img class="storywave_img" src="StoryWaveLogo.png" alt="홈 화면 이동">
+    <a class="storywave_logo" href="../home.html">
+      <img class="storywave_img" src="../../static/photo/StoryWaveLogo.png" alt="홈 화면 이동">
     </a>
     <nav class="menu_cont">
       <form class="search_form">
         <label for="search-input"></label>
         <input id="search-input" class="search_box" type="search" name="search_input">
-        <button id="search_btn"><img class="search_img" src="search.png" alt="검색 버튼"></button>
+        <button id="search_btn"><img class="search_img" src="../../static/photo/search.png" alt="검색 버튼"></button>
       </form>
       <div class="menu_cont2">
-        <a th:href="">공지사항</a>
-        <a th:href="">영화 <span>리뷰/서평</span></a>
-        <a th:href="">도서 <span>리뷰/서평</span></a>
+        <a href="Noticepostlist.html">공지사항</a>
+        <a href="Moviepostlist.html">영화 <span>리뷰/서평</span></a>
+        <a href="Bookpostlist.html">도서 <span>리뷰/서평</span></a>
         <div class="user_menu">
           <a th:href="">회원가입</a>
           <span>|</span>
@@ -268,16 +269,20 @@
 </header>
 <main>
   <div class="container">
-    <form id="postForm" action='http://localhost:8081/post/0' method="post" enctype="multipart/form-data">
+    <form id="postForm" action='http://localhost:8081/post/2' method="post" enctype="multipart/form-data">
       <div class="form-group">
         <label for="title">제목</label>
         <input type="text" id="title" name="title">
         <span class="error-message" id="title-error">제목을 입력하세요.</span>
       </div>
       <div class="form-group">
-        <label>카테고리 - 공지사항</label>
+        <label>카테고리 - 도서</label>
         <ul class="category-list">
-          <li><input type="checkbox" id="announcement" name="categories" value="announcement"><label for="announcement">공지사항</label></li>
+          <li><input type="checkbox" id="novel" name="categories" value="novel"><label for="novel">소설/시</label></li>
+          <li><input type="checkbox" id="essay" name="categories" value="essay"><label for="essay">에세이</label></li>
+          <li><input type="checkbox" id="humanity" name="categories" value="humanity"><label for="humanity">인문</label></li>
+          <li><input type="checkbox" id="economy" name="categories" value="economy"><label for="economy">경제/경영</label></li>
+          <li><input type="checkbox" id="etc" name="categories" value="etc"><label for="etc">기타</label></li>
         </ul>
         <span class="error-message" id="category-error">카테고리를 선택하세요.</span>
       </div>
@@ -286,7 +291,7 @@
           <label for="content">내용</label>
           <div class="image-upload-container">
             <label for="images">
-              <img src="photoadd.png" alt="이미지 업로드" style="width: 24px; height: 24px;">
+              <img src="../../static/photo/photoadd.png" alt="이미지 업로드" style="width: 24px; height: 24px;">
             </label>
             <input type="file" id="images" name="images" accept="image/*" multiple>
           </div>
@@ -373,7 +378,7 @@
               alert('작성 완료되었습니다.');
               this.reset();
               document.getElementById('content').innerHTML = '';
-              window.location.href = 'NOticepostlist.html';
+              window.location.href = 'posts_detail.html';
             })
             .catch(error => {
               alert('제출 중 오류가 발생했습니다: ' + error.message);

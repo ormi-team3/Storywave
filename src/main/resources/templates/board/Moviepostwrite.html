@@ -37,6 +37,7 @@
     a {
       text-decoration: none;
       color: black;
+      cursor:pointer;
     }
 
     h3 {
@@ -243,19 +244,19 @@
   <!-- 헤더 -->
   <h1 style="display: none">스토리웨이브 사이트 홈 화면</h1>
   <div class="nav_bar">
-    <a class="storywave_logo" href="">
-      <img class="storywave_img" src="StoryWaveLogo.png" alt="홈 화면 이동">
+    <a class="storywave_logo" href="../home.html">
+      <img class="storywave_img" src="../../static/photo/StoryWaveLogo.png" alt="홈 화면 이동">
     </a>
     <nav class="menu_cont">
       <form class="search_form">
         <label for="search-input"></label>
         <input id="search-input" class="search_box" type="search" name="search_input">
-        <button id="search_btn"><img class="search_img" src="search.png" alt="검색 버튼"></button>
+        <button id="search_btn"><img class="search_img" src="../../static/photo/search.png" alt="검색 버튼"></button>
       </form>
       <div class="menu_cont2">
-        <a th:href="">공지사항</a>
-        <a th:href="">영화 <span>리뷰/서평</span></a>
-        <a th:href="">도서 <span>리뷰/서평</span></a>
+        <a href="Noticepostlist.html">공지사항</a>
+        <a href="Moviepostlist.html">영화 <span>리뷰/서평</span></a>
+        <a href="Bookpostlist.html">도서 <span>리뷰/서평</span></a>
         <div class="user_menu">
           <a th:href="">회원가입</a>
           <span>|</span>
@@ -293,7 +294,7 @@
           <label for="content">내용</label>
           <div class="image-upload-container">
             <label for="images">
-              <img src="photoadd.png" alt="이미지 업로드" style="width: 24px; height: 24px;">
+              <img src="../../static/photo/photoadd.png" alt="이미지 업로드" style="width: 24px; height: 24px;">
             </label>
             <input type="file" id="images" name="images" accept="image/*" multiple>
           </div>
@@ -380,7 +381,7 @@
               alert('작성 완료되었습니다.');
               this.reset();
               document.getElementById('content').innerHTML = '';
-              window.location.href = 'moviepostlist.html';
+              window.location.href = 'posts_detail.html';
             })
             .catch(error => {
               alert('제출 중 오류가 발생했습니다: ' + error.message);
