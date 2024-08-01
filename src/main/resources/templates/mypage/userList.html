@@ -299,7 +299,7 @@
             </form>
             <div class="menu_cont2">
                 <!--각 링크 공유해야함-->
-                <a >공지사항</a>
+                <a>공지사항</a>
                 <a >영화 <span>리뷰/서평</span></a>
                 <a >도서 <span>리뷰/서평</span></a>
                 <div class="user_menu">
@@ -327,7 +327,6 @@
         </thead>
         <tbody id="post-list">
         <tr th:each="user : ${users}">
-            <!--인덱스 구현 데이터 구현-->
             <td th:text="${user.username}" > </td>
             <td th:text="${user.nickname}" > </td>
             <td th:text="${user.email}" > </td>
@@ -343,15 +342,15 @@
     </div>
     <div class="modal" id="userModal">
         <div class="modal-content">
-            <form id="modalForm" action="/api/userList" method="post">
+            <form id="modalForm" action="/userList" method="post">
                 <div class="change-status">
                     <div class="dropdown-label">
                         정지 기간
                     </div>
                     <div class="dropdown">
                         <button class="dropbtn" onclick="dropdown()">
-                        <!--<span class="dropbtn_icon">more_horiz</span>-->
-                            <span class="dropbtn-click" th:text="${activeStatus}"></span>
+                            <!--<span class="dropbtn_icon">more_horiz</span>-->
+                            <span class="dropbtn-click" ></span>
                         </button>
                         <div class="dropdown-content">
                             <div class="userControl" onclick="setStatus(this.innerText)">회원</div>

@@ -54,11 +54,11 @@ public class UserService {
 
     //service에서 값을 호출해야 controller에 뜬다
 
-    public List<UserDto> getAllUsers() {
+    /*public List<UserDto> getAllUsers() {
         return users.stream()
                 .map(this::convertToUserDto)
                 .collect(Collectors.toList());
-    }
+    }*/
     public UserDto getUserDtoById(Long id) {
         return users.stream()
                 .filter(p -> p.getId().equals(id))
@@ -89,18 +89,26 @@ public class UserService {
     }
 
 
-    public UserDto updateUserStatus(Long id, UserDto updateUserStatusDto) {
+   /* public UserDto updateUserStatus(Long id, UserDto updateUserStatusDto) {
         User user = findUserById(id);
         ActiveStatus newStatus = updateUserStatusDto.getActiveStatus();
         user.setActiveStatus(newStatus);
         return convertToUserDto(user);
 
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public UserDto getUser(Long id) {
         User user = userRepository.findAll().get(users.size());
         return UserDto.fromEntity(user);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
 

@@ -23,9 +23,10 @@ public class UserDto {
     private LocalDateTime updatedAt;
 
 
-    public ActiveStatus getActiveStatus() {
+    /*public ActiveStatus getActiveStatus() {
+
         return ActiveStatus.valueOf(activeStatus.toString());
-    }
+    }*/
 
     public LocalDateTime createdAt(){
         return LocalDateTime.now();
@@ -50,6 +51,7 @@ public class UserDto {
         user.setNickname(this.nickname);
         user.setEmail(this.email);
         user.setId(this.id);
+        user.setActiveStatus(this.activeStatus);
         return user;
     }
 
