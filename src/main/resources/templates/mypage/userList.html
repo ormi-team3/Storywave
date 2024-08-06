@@ -377,7 +377,7 @@
             <td th:text="${user.email}"> </td>
             <td th:text="${user.createdAt}"> </td>
             <td th:text="${user.activeStatus}"> </td>
-            <td><button class="btn-open-modal" data-user-id="${user.userId}">회원 관리</button></td>
+            <td><button class="btn-open-modal" th:data-user-id="${user.userId}">회원 관리</button></td>
         </tr>
         </tbody>
     </table>
@@ -435,7 +435,7 @@
 
         // 사용자 데이터 가져와서 모달에 채우기
         function openUserUpdateModal(userId) {
-            fetch(`http://localhost:8081/userList/${userId}`, {
+            fetch(`http://localhost:8081/mypage/${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
