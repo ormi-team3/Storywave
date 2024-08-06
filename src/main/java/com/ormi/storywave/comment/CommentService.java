@@ -35,6 +35,11 @@ public class CommentService {
     this.userRepository = userRepository;
   }
 
+  // 주어진 사용자 이름으로 댓글을 찾는 메서드
+  public List<Comment> findCommentsByUsername(String username) {
+    return commentRepository.findByUserUsername(username);
+  }
+
   public CommentDto createComment(CommentDto commentDto, Long postId, String userId) {
     Post posts =
             postRepository
