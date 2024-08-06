@@ -30,14 +30,12 @@ public class AdminController {
         if (userDto == null) {
             return "redirect:/login";
         }
-
+*/
         List<UserDto> users = userService.getAllUsers();
         model.addAttribute("users", users);
 
-        String role = userService.getUserRole(userDto.getUserId());
+        //String role = userService.getUserRole(userDto.getUserId());
 
-
-*/
 
         String role = "ADMIN";
 
