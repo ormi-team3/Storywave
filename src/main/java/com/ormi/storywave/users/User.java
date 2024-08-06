@@ -52,17 +52,6 @@ public class User {
   private LocalDateTime updatedAt;
 
 
-//ban 추가
-  @Column(name="ban_period")
-  private String banPeriod;
-
-  @Column(name="ban_reason")
-  private String banReason;
-
-
-
-
-
 
   @Column
   @OneToMany(mappedBy = "user")

@@ -48,8 +48,6 @@ public class UserDto implements Serializable {
                     .activeStatus(user.isActiveStatus())
                     .createdAt(user.getCreatedAt())
                     .updatedAt(user.getUpdatedAt())
-                    .banReason(user.getBanReason())
-                    .banPeriod(user.getBanPeriod())
                     .build();
 //    if (user.getComments() != null) {
 //      usersDto.setComments(
@@ -74,8 +72,6 @@ public class UserDto implements Serializable {
     user.setActiveStatus(this.activeStatus);
     user.setCreatedAt(this.createdAt);
     user.setUpdatedAt(this.updatedAt);
-    user.setBanReason(this.banReason);
-    user.setBanPeriod(this.banPeriod);
 
 //    if (this.comments != null) {
 //      this.comments.forEach(

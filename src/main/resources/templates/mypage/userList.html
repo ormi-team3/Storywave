@@ -336,10 +336,12 @@
             <img class="storywave-img" src="/photo/StoryWaveLogo.png" alt="홈 화면 이동">
         </a>
         <nav class="menu-cont">
-            <form class="search-form">
+            <form class="search-form" id="search-form" th:action="@{/board/Searchlist}" method="get">
                 <label for="search-input" style="display:none;">검색</label>
-                <input id="search-input" class="search_box" type="search" name="search_input" placeholder="검색">
-                <button id="search_btn"><img class="search_img" src="/photo/search.png" alt="검색 버튼"></button>
+                <input id="search-input" class="search_box" type="search" name="keyword" placeholder="검색">
+                <button type="submit" id="search_btn">
+                    <img class="search_img" src="/photo/search.png" alt="검색 버튼">
+                </button>
             </form>
             <div class="menu-container">
                 <div class="menu-cont2">
@@ -363,6 +365,7 @@
         <thead>
         <tr>
             <th>이름</th>
+            <th>ID</th>
             <th>닉네임</th>
             <th>이메일</th>
             <th>날짜</th>
@@ -373,6 +376,7 @@
         <tbody id="post-list">
         <tr th:each="user : ${users}">
             <td th:text="${user.username}"> </td>
+            <td th:text="${user.userId}"> </td>
             <td th:text="${user.nickname}"> </td>
             <td th:text="${user.email}"> </td>
             <td th:text="${user.createdAt}"> </td>
@@ -416,6 +420,13 @@
 
 
     <script th:inline="javascript">
+        //검색기능
+        document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const searchInput = document.getElementById('search-input').value;
+            const searchUrl = `/board/Searchlist?keyword=${encodeURIComponent(searchInput)}`;
+            window.location.href = searchUrl;
+        });
 
         document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.btn-open-modal').forEach(button => {
@@ -454,7 +465,26 @@
         // 상태 표시 업데이트
         function setStatus(newStatus) {
             document.querySelector('.dropbtn-click').textContent = newStatus;
-            closeDropdown(); // 드롭다운 닫기
+            closeDropdown();
+        }
+
+        //period를 숫자로 변경
+        function extractNumberFromString(text) {
+            const match = text.match(/\d+/);
+            return match ? parseInt(match[0], 10) : 0; // 숫자 반환, 없으면 0
+        }
+
+        // 현재 날짜와 시간을 'yyyy-MM-ddTHH:mm:ss' 형식으로 반환
+        function getFormattedDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         }
 
         // 변경사항 적용 및 서버로 전송
@@ -462,15 +492,22 @@
             const userId = document.getElementById('userId').value;
             const status = document.querySelector('.dropbtn-click').textContent;
             const reason = document.getElementById('statusReason').value;
-            const period = document.querySelector('.dropbtn-click').textContent; // 예를 들어 "7일 정지"와 같은 문자열
+            const periodText = document.querySelector('.dropbtn-click').textContent;
 
             // 상태에 따라 isActiveStatus를 설정
             const isActiveStatus = status === '회원';
 
+            // banPeriod의 숫자 부분만 추출
+            const banPeriod = extractNumberFromString(periodText);
+
+            // 현재 날짜를 포함
+            const banDate = getFormattedDate();
+
             const userParams = {
                 isActiveStatus: isActiveStatus,
                 banReason: reason,
-                banPeriod: period // 문자열을 그대로 전송
+                banPeriod: banPeriod,
+                banDate: banDate  // 추가된 부분
             };
 
             fetch(`http://localhost:8081/mypage/${userId}/reject`, {
@@ -523,117 +560,6 @@
                 closeDropdown();
             }
         });
-
-
-
-
-        /*document.addEventListener('DOMContentLoaded', () => {
-            const userList = document.getElementById('user-list');
-            const pagination = document.getElementById('pagination');
-            const postsPerPage = 10; // 페이지당 게시글 수
-            let currentPage = 1;
-            let users = [];
-
-            // 사용자 목록을 가져오는 함수
-            function fetchUsers() {
-                fetch('http://localhost:8081/admin/users') // 사용자 목록 API 엔드포인트
-                    .then(response => response.json())
-                    .then(data => {
-                        users = data; // 사용자 데이터 저장
-                        updatePagination(users.length); // 페이지네이션 업데이트
-                        displayUsers(users, currentPage); // 첫 페이지 사용자 목록 표시
-                    })
-                    .catch(error => console.error('사용자 데이터 가져오기 오류:', error));
-            }
-
-            // 사용자 목록을 표시하는 함수
-            function displayUsers(pageNumber) {
-                const paginatedUsers = paginate(pageNumber, postsPerPage);
-                paginatedUsers.slice(pageNumber, postsPerPage);
-            }
-
-            // 페이지네이션 버튼을 업데이트하는 함수
-            function updatePagination(totalItems) {
-                const totalPages = Math.ceil(totalItems / postsPerPage);
-                pagination.innerHTML = Array.from({length: totalPages}, (_, i) => `
-                <button class="${i + 1 === currentPage ? 'active' : ''}" data-page="${i + 1}">${i + 1}</button>
-                `).join('');
-
-                // 페이지네이션 버튼 클릭 이벤트
-                pagination.querySelectorAll('button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        currentPage = parseInt(button.getAttribute('data-page'), 10);
-                        displayUsers(users, currentPage);
-                        updatePagination(users.length); // 페이지네이션 업데이트
-                    });
-                });
-            }
-
-            // 페이지네이션 함수
-            function paginate(items, pageNumber, pageSize) {
-                const start = (pageNumber - 1) * pageSize;
-                const end = start + pageSize;
-                return items.slice(start, end);
-            }
-
-            // 초기 사용자 목록 로드
-            fetchUsers();
-        });*/
-
-        /*function toggleDropdown() {
-            dropdownContent.classList.toggle('show');
-        }
-
-        function selectMenuItem(event) {
-            if (event.target.classList.contains('userControl')) {
-                dropbtn.innerText = event.target.innerText;
-                dropdownContent.classList.remove('show');
-            }
-        }
-
-        dropbtn.addEventListener('click', toggleDropdown);
-        dropdownContent.addEventListener('click', selectMenuItem);
-
-        function setStatus(status) {
-            document.querySelector('.dropbtn_click').innerText = status;
-            document.querySelector('.user-status-reason').value = status;
-        }
-
-*/
-        /* 모달 열기 버튼 클릭 이벤트 설정
-        document.querySelectorAll('.btn-open-modal').forEach(button => {
-            button.addEventListener('click', () => {
-                openModal(); // 모달 열기
-            });
-        });
-
-        // 모달 닫기 버튼 클릭 이벤트 설정
-        document.querySelectorAll('.close').forEach(button => {
-            button.addEventListener('click', () => {
-                closeModal(); // 모달 닫기
-            });
-        });*/
-
-
-        /* function openUserUpdateModal(activeStatus) {
-             const userStatus = "${user.activeStatus}";
-             const reason = "${user.reason}";
-             const id = "${user.id}";
-                 $.ajax({
-                     url: `/updateUserStatus/{id}`,
-                     type: 'GET',
-                     dataType: 'json',
-                     success: function (response) {
-                         document.getElementById('modifyContent').value = response.content;
-                         document.getElementById('modal').setAttribute('onclick', `updateUserStatus(${user.activeStatus})`);
-                         openModal();
-                     },
-                     error: function (request, status, error) {
-                         console.log(error);
-                     }
-                 })*/
-
-
 
 
 

@@ -59,7 +59,10 @@ public class UserController {
         } else if(!loginResult.isActiveStatus()) {
             // 비영구 정지 회원의 경우
             session.setAttribute("userId", loginResult.getUserId());
+            session.setAttribute("activeStatus", loginResult.isActiveStatus());
+            session.setAttribute("role", loginResult.getRole());
 
+            model.addAttribute("message", "정지 회원입니다.");
             String endDate = banDto.getBanDate().plusDays(banDto.getBanPeriod())
                     .format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"));
 
@@ -68,6 +71,7 @@ public class UserController {
             return "login/ban";
         } else { // 로그인 성공
             session.setAttribute("userId", loginResult.getUserId()); // 로그인 세션 유지
+            session.setAttribute("role", loginResult.getRole());
             return "redirect:/home";
         }
     }

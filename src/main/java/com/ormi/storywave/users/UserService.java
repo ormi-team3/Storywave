@@ -1,14 +1,21 @@
 package com.ormi.storywave.users;
 
 
+import com.ormi.storywave.admin.Ban;
+import com.ormi.storywave.admin.BanDto;
+import com.ormi.storywave.admin.BanRepository;
+import com.ormi.storywave.admin.BanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 import static com.ormi.storywave.users.UserDto.fromUsers;
 
@@ -16,10 +23,14 @@ import static com.ormi.storywave.users.UserDto.fromUsers;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final BanService banService;
+    private final BanRepository banRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BanService banService, BanRepository banRepository) {
         this.userRepository = userRepository;
+        this.banService = banService;
+        this.banRepository = banRepository;
     }
 
 
@@ -41,7 +52,7 @@ public class UserService {
                 .map(UserDto::fromUsers);
     }
 
-    public Optional<UserDto> getUserByPostId(Long postId){
+    public Optional<UserDto> getUserByPostId(Long postId) {
         return userRepository.findByPosts_Id(postId)
                 .map(UserDto::fromUsers);
     }
@@ -69,7 +80,7 @@ public class UserService {
 
     public boolean deleteUser(String userId) {
         return userRepository.findById(userId)
-                .map(u->{
+                .map(u -> {
                     userRepository.delete(u);
                     return true;
                 })
@@ -109,13 +120,12 @@ public class UserService {
         }
 
         // 해당 아이디에 비밀번호가 일치하지 않는 경우
-        if(!foundUser.get().getPassword().equals(loginDto.getPassword())) {
+        if (!foundUser.get().getPassword().equals(loginDto.getPassword())) {
             return null;
         }
 
         return foundUser.orElse(null);
     }
-
 
 
     public String getUserRole(String userId) {
@@ -126,35 +136,55 @@ public class UserService {
         return userRepository.findByUserId(userId).orElse(null);
     }
 
-    public UserDto changeUserStatus(String userId, UserDto userDto) {
-        User user = findByUserId(userId);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
+
+    public UserDto changeUserStatus(String userId, UserDto userDto, BanDto banDto) {
+        // 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 사용자 상태 업데이트
+        user.setActiveStatus(userDto.isActiveStatus());
+
+        // Ban 정보가 있는지 확인
+        Optional<Ban> optionalBan = banRepository.findByUser_UserId(userId);
+
+        // DateTimeFormatter 정의
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+
+        // banDate를 LocalDateTime으로 변환, null일 경우 현재 날짜와 시간으로 설정
+        LocalDateTime banDate = (banDto.getBanDate() != null)
+                ? banDto.getBanDate() // 이미 LocalDateTime이므로 변환 필요 없음
+                : LocalDateTime.now(); // 기본값으로 현재 날짜와 시간 설정
+
+        if (optionalBan.isPresent()) {
+            // Ban 정보가 있는 경우 업데이트
+            Ban ban = optionalBan.get();
+            ban.setBanReason(banDto.getBanReason());
+            ban.setBanPeriod(banDto.getBanPeriod());
+            // banDate와 banPeriod를 더해서 업데이트
+            ban.setBanDate(banDate.plusDays(banDto.getBanPeriod()));
+
+            banRepository.save(ban);
+
+        } else {
+            Ban newBan = new Ban();
+            newBan.setUser(user); // User 객체 설정
+            newBan.setBanReason(banDto.getBanReason());
+            newBan.setBanPeriod(banDto.getBanPeriod());
+            // banDate와 banPeriod를 더해서 설정
+            newBan.setBanDate(banDate.plusDays(banDto.getBanPeriod()));
+
+            banRepository.save(newBan);
         }
 
-
-        // User 상태 업데이트
-        user.setActiveStatus(userDto.isActiveStatus());
-        user.setBanReason(userDto.getBanReason()); // UserDto에 추가된 banReason 설정
-        user.setBanPeriod(userDto.getBanPeriod()); // UserDto에 추가된 banPeriod 설정
-
-        // 변경 사항 저장
         user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user); // 사용자 정보 저장
+        userRepository.save(user);
 
         // UserDto로 변환하여 반환
-        return fromUsers(user); // User 객체를 UserDto로 변환
+        return fromUsers(user);
     }
-
-
-
-
-    /*private User iaAdmin(String userId) {
-        return users.stream()
-                .filter(p -> p.getId(id).equals(userId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 글을 찾을 수 없습니다."));
-    }*/
-
-
 }
+
+
+
+
