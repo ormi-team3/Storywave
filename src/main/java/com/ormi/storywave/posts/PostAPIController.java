@@ -1,6 +1,8 @@
 package com.ormi.storywave.posts;
 
 import com.ormi.storywave.board.PostListDto;
+import com.ormi.storywave.users.UserService;
+import jakarta.servlet.http.HttpSession;
 import com.ormi.storywave.users.User;
 import com.ormi.storywave.users.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -20,12 +22,14 @@ public class PostAPIController {
   private final PostService postService;
   private final UserRepository userRepository;
   private final HttpSession httpSession;
+  private final UserService userService;
 
   @Autowired
-  public PostAPIController(PostService postService, UserRepository userRepository, HttpSession httpSession) {
+  public PostAPIController(PostService postService, UserRepository userRepository, UserService userService, HttpSession httpSession) {
     this.postService = postService;
     this.userRepository = userRepository;
     this.httpSession = httpSession;
+    this.userService = userService;
   }
 
   @PostMapping("/{post_type_id}")
@@ -58,7 +62,7 @@ public class PostAPIController {
     return ResponseEntity.ok(postSummaries);
   }
 
-  @GetMapping("/{post_type_id}/post/{postId}")
+  @GetMapping("/{post_type_id}/postDetail/{postId}")
   public ResponseEntity<PostDto> getPost(@PathVariable("post_type_id") Long post_type_id, @PathVariable("postId") Long postId) {
     PostDto postDto = postService.getPostByPostTypeIdAndPostId(post_type_id, postId);
     return ResponseEntity.ok(postDto);
@@ -68,5 +72,21 @@ public class PostAPIController {
   @PostMapping("/{postId}/like")
   public boolean likePost(@PathVariable("postId") Long postId, @RequestParam("userId") String userId){
     return postService.saveLike(postId, userId);
+  }
+
+  @PutMapping("{post_type_id}/postDetail/{postId}")
+//  public ResponseEntity<PostDto> updatePost(@PathVariable("post_type_id") Long postTypeId, @PathVariable("postId") Long postId, HttpSession session, @RequestBody PostDto postDto){
+  public ResponseEntity<PostDto> updatePost(@PathVariable("post_type_id") Long postTypeId, @PathVariable("postId") Long postId, @RequestParam("userId") String userId, @RequestBody PostDto postDto){
+//    String userId = (String) session.getAttribute("userId");
+    return postService.updatePost(postId, postDto, userId)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+  }
+
+  @DeleteMapping("{post_type_id}/postDetail/{postId}")
+  public ResponseEntity<Void> deletePost(@PathVariable("post_type_id") Long postTypeId, @PathVariable("postId") Long postId, HttpSession session){
+//    String userId = (String) session.getAttribute("userId");
+    postService.deletePosts(postTypeId, postId);
+    return ResponseEntity.noContent().build();
   }
 }

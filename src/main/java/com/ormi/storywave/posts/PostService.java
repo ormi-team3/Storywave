@@ -1,6 +1,7 @@
 package com.ormi.storywave.posts;
 
 import com.ormi.storywave.board.*;
+import com.ormi.storywave.comment.CommentService;
 import com.ormi.storywave.users.User;
 import com.ormi.storywave.users.UserDto;
 import com.ormi.storywave.users.UserRepository;
@@ -41,6 +42,8 @@ public class PostService {
 
   @Value("${file.upload-dir}")
   private String uploadDir;
+  @Autowired
+  private CommentService commentService;
     @Autowired
     private UserService userService;
 
@@ -236,17 +239,16 @@ public class PostService {
             });
   }
 
-  // 글쓴이나, role이 admin인 사람만 포스트 삭제 가능
-  public boolean deletePosts(Long postId, String userId) {
-    UserDto users =
-        userRepository
-            .findByUserId(userId)
-            .map(UserDto::fromUsers)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+  @Transactional
+  public boolean deletePosts(Long postTypeId, Long postId) {
+    Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("포스트를 찾을 수 없습니다"));
+    // 댓글 삭제
+    commentService.deleteCommentsByPostId(postId);
+    // 공감 기록 삭제
+    userPostLikeRepository.deleteByPost(post);
     return postRepository
         .findById(postId)
-        .filter(
-            posts -> posts.getUser().getUserId().equals(userId) || users.getRole().equals("admin"))
         .map(
             posts -> {
               postRepository.delete(posts);

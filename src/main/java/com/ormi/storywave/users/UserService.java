@@ -1,6 +1,5 @@
 package com.ormi.storywave.users;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +63,7 @@ public class UserService {
 
     public boolean selectNickname(String nickname) {
         System.out.println(nickname);
+
         return userRepository.existsByNickname(nickname);
     }
 

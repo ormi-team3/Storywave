@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>StoryWave</title>
     <link rel="icon" href="/photo/StoryWaveLogo.png" type="image/x-icon">
-    <!--    <link rel="stylesheet" th:href="@{/indexCss.css}">-->
     <style>
         * {
             padding: 0;
@@ -249,9 +248,9 @@
 </head>
 <body>
 <header>
-    <h1 style="display: none">스토리웨이브 사이트 홈 화면</h1>
+    <h1 style="display: none">홈 화면</h1>
     <div class="nav-bar">
-        <a th:href="@{/home}" class="storywave-logo">
+        <a class="storywave-logo" th:href="@{/home}">
             <img class="storywave-img" src="/photo/StoryWaveLogo.png" alt="홈 화면 이동">
         </a>
         <nav class="menu-cont">
@@ -295,7 +294,7 @@
                 <tbody>
                 <tr th:each="noticePost : ${noticePosts}">
                     <td th:text="${noticePost.id}">id</td>
-                    <td th:text="${noticePost.title}">제목</td>
+                    <td><a th:text="${noticePost.title}" th:href="@{|/board/0/post/${noticePost.id}|}" onclick="checkLoginStatusAndRedirect2(event)">제목</a></td>
                     <td th:text="${#temporals.format(noticePost.updated_at, 'yyyy-MM-dd')}">게시물 날짜</td>
                 </tr>
                 </tbody>
@@ -304,15 +303,13 @@
         <section class="bestPost_cont">
             <div class="post_title">
                 <h3>Best</h3>
-                <a class="showMore">Show More</a>
+                <a class="showMore" href="#">Show More</a>
             </div>
             <table>
                 <tbody>
                 <tr>
                     <td>id</td>
-                    <td>
-                        <a>베스트 게시물 제목</a>
-                    </td>
+                    <td><a>베스트 게시물 제목</a></td>
                     <td>게시물 날짜</td>
                 </tr>
                 </tbody>
@@ -329,7 +326,7 @@
                 <tbody>
                 <tr th:each="moviePost : ${moviePosts}">
                     <td th:text="${moviePost.id}">id</td>
-                    <td th:text="${moviePost.title}">제목</td>
+                    <td><a th:text="${moviePost.title}" th:href="@{|/board/1/post/${moviePost.id}|}" onclick="checkLoginStatusAndRedirect2(event)">제목</a></td>
                     <td th:text="${#temporals.format(moviePost.updated_at, 'yyyy-MM-dd')}">게시물 날짜</td>
                 </tr>
                 </tbody>
@@ -345,7 +342,7 @@
                 <tbody>
                 <tr th:each="bookPost : ${bookPosts}">
                     <td th:text="${bookPost.id}">id</td>
-                    <td th:text="${bookPost.title}">제목</td>
+                    <td><a th:text="${bookPost.title}" th:href="@{|/board/2/post/${bookPost.id}|}" onclick="checkLoginStatusAndRedirect2(event)">제목</a></td>
                     <td th:text="${#temporals.format(bookPost.updated_at, 'yyyy-MM-dd')}">게시물 날짜</td>
                 </tr>
                 </tbody>
@@ -365,17 +362,25 @@
         </a>
     </article>
 </main>
-<script th:inline="javascript">
-    // const data = [[${dataList}]]; // 서버에서 전달받은 데이터
-    // const listContainer = document.getElementById('data-list');
-    //
-    // for (let i = 0; i < 3; i++) { // 데이터를 3번 반복
-    //     for (let j = 0; j < data.length; j++) {
-    //         let listItem = document.createElement('li');
-    //         listItem.textContent = data[j];
-    //         listContainer.appendChild(listItem);
-    //     }
-    // }
+<script>
+    function checkLoginStatusAndRedirect2(event){
+        event.preventDefault(); // 링크 클릭을 방지합니다.
+
+        fetch('/check-login')
+            .then(response => response.json())
+            .then(isLoggedIn => {
+                if (isLoggedIn) {
+                    // 로그인된 상태이면 글쓰기 페이지로 이동
+                    window.location.href = event.target.href;
+                } else {
+                    // 로그인되지 않은 상태이면 로그인하라는 팝업을 띄움
+                    alert('로그인 후 게시글 열람이 가능합니다. 로그인 해주세요!');
+                    // 선택적으로 로그인 페이지로 리디렉션
+                    // window.location.href = '/user/login';
+                }
+            })
+            .catch(error => console.error('로그인 상태 확인 중 오류 발생:', error));
+    }
 </script>
 </body>
 </html>
