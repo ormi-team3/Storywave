@@ -1,5 +1,7 @@
 package com.ormi.storywave.board;
+import com.ormi.storywave.users.User;
 import com.ormi.storywave.users.UserDto;
+import com.ormi.storywave.users.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +17,8 @@ import java.util.Optional;
 public class BoardController {
 
     @Autowired
-    private UserService userService; // UserService를 주입받아야 합니다.
+    private UserService userService;// UserService를 주입받아야 합니다.
+    private UserRepository userRepository;
 
     @GetMapping("/check-login")
     @ResponseBody
@@ -98,6 +101,18 @@ public class BoardController {
     public String showNoticePostWrite(Model model, HttpSession session){
         // 세션에서 userId를 가져옵니다.
         String userId = (String) session.getAttribute("userId");
+
+        /*String role = userService.getUserRole(userId);
+
+        // 뭔가 여기가 아니라 html에 쿼리를 받아야할 것 같아서 보류
+            if (!"ADMIN".equals(role)) {
+                throw new RuntimeException("공지사항은 관리자만 작성 가능합니다.");
+            }
+            //삭제 가능!
+            else if ("ADMIN".equals(role) ){
+                throw new RuntimeException("관리자는 공지사항만 작성 가능합니다.");
+            }*/
+
 
         if (userId != null) {
             // userId가 세션에 있는 경우, UserDto를 조회합니다.

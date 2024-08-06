@@ -101,10 +101,6 @@ public class PostService {
 
     UserDto userDto = userService.getUserById(findUserId).orElse(null);
 
-    // 사용자 정보가 없으면 로그인 페이지로 리디렉션
-    /*if (userDto == null) {
-      return "redirect:/login";
-    }*/
 
     // 사용자 정보를 데이터베이스에서 가져옵니다.
     User user = userRepository.findById(findUserId)

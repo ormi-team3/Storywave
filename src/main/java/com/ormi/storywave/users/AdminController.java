@@ -3,6 +3,7 @@ package com.ormi.storywave.users;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class AdminController {
     @GetMapping("/userList")
     public String getAllUsers(HttpSession httpSession, Model model) {
 
-        String findUserId = (String)httpSession.getAttribute("userId");
+        /*String findUserId = (String)httpSession.getAttribute("userId");
 
         UserDto userDto = userService.getUserById(findUserId).orElse(null);
 
@@ -30,11 +31,14 @@ public class AdminController {
         if (userDto == null) {
             return "redirect:/login";
         }
-
+*/
         List<UserDto> users = userService.getAllUsers();
         model.addAttribute("users", users);
 
-        String role = userService.getUserRole(userDto.getUserId());
+        //String role = userService.getUserRole(userDto.getUserId());
+
+
+        String role = "ADMIN";
 
         if ("ADMIN".equals(role)){
             return "mypage/userList";
@@ -95,11 +99,16 @@ public class AdminController {
     }
 
     @PostMapping("/mypage/{userId}/reject")
-    public UserDto updateUserStatus(@PathVariable String userId,
-                                    @RequestBody UserDto userDto) {
+    @ResponseBody
+    public ResponseEntity<UserDto> updateUserStatus(@PathVariable String userId,
+                                    @RequestBody UserDto updateUserDto) {
         // User 상태 변경
-        return userService.changeUserStatus(userId, userDto);
+        UserDto changeUserStatus = userService.changeUserStatus(userId,updateUserDto);
+
+      return ResponseEntity.ok(changeUserStatus);
     }
+
+
 
 
 
