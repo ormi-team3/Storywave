@@ -435,7 +435,7 @@
 
         // 사용자 데이터 가져와서 모달에 채우기
         function openUserUpdateModal(userId) {
-            fetch(`http://localhost:8081/admin/mypage/${userId}`, {
+            fetch(`http://localhost:8081/userList/${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -473,7 +473,7 @@
                 banPeriod: period // 문자열을 그대로 전송
             };
 
-            fetch(`http://localhost:8081/admin/mypage/${userId}/reject`, {
+            fetch(`http://localhost:8081/mypage/${userId}/reject`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8"
@@ -527,7 +527,7 @@
 
 
 
-        document.addEventListener('DOMContentLoaded', () => {
+        /*document.addEventListener('DOMContentLoaded', () => {
             const userList = document.getElementById('user-list');
             const pagination = document.getElementById('pagination');
             const postsPerPage = 10; // 페이지당 게시글 수
@@ -578,7 +578,7 @@
 
             // 초기 사용자 목록 로드
             fetchUsers();
-        });
+        });*/
 
         /*function toggleDropdown() {
             dropdownContent.classList.toggle('show');

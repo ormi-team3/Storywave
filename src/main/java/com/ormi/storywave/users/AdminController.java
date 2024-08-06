@@ -98,10 +98,12 @@ public class AdminController {
     }
 
     @PostMapping("/mypage/{userId}/reject")
+    @ResponseBody
     public UserDto updateUserStatus(@PathVariable String userId,
                                     @RequestBody UserDto userDto) {
         // User 상태 변경
-        return userService.changeUserStatus(userId, userDto);
+
+      return userService.changeUserStatus(userId, userDto);
     }
 
 
