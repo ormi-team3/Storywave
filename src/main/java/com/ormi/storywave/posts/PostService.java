@@ -44,6 +44,10 @@ public class PostService {
     @Autowired
     private UserService userService;
 
+  public Page<Post> getPostsByUserId(String userId, Pageable pageable) {
+    return postRepository.findByUserUserId(userId, pageable);
+  }
+
   // 페이지 번호, 크기를 기반으로 페이지네이션된 게시물 반환 메서드
   public Page<Post> findPaginated(int page, int pageSize) {
     Pageable pageable = PageRequest.of(page - 1, pageSize);
@@ -56,14 +60,17 @@ public class PostService {
 
     return posts.stream()
             .filter(post ->
-                    post.getCategories().stream().anyMatch(category ->
-                            category.getBoard().getPostTypeId().equals(0L) ||
-                                    category.getBoard().getPostTypeId().equals(post_type_id)
-                    )
+                    post.getCategories().stream()
+                            .filter(category -> category.getBoard() != null) // null 체크 추가
+                            .anyMatch(category ->
+                                    category.getBoard().getPostTypeId().equals(0L) ||
+                                            category.getBoard().getPostTypeId().equals(post_type_id)
+                            )
             )
             .map(post -> {
               Long commentCount = postRepository.countCommentsByPostId(post.getId());
               Set<CategoryDto> categoryDtos = post.getCategories().stream()
+                      .filter(category -> category.getBoard() != null) // null 체크 추가
                       .map(category -> new CategoryDto(
                               category.getId(),
                               new BoardDto(category.getBoard().getPostTypeId(), category.getBoard().getViewPost()),
@@ -87,8 +94,8 @@ public class PostService {
               );
             })
             .collect(Collectors.toList());
+  }
 
-}
   public Post createPost(
           Post post,
           MultipartFile[] imageFiles,

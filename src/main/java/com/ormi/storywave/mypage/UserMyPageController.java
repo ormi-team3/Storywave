@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/userMyPage")
 public class UserMyPageController {
 
-    @GetMapping
-    public String showAdminMyPage() {
-        return "mypage/mypage";
-    }
+//    @GetMapping
+//    public String showAdminMyPage() {
+//        return "mypage/mypage";
+//    }
 }

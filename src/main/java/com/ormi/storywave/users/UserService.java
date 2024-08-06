@@ -69,11 +69,15 @@ public class UserService {
 
     public boolean deleteUser(String userId) {
         return userRepository.findById(userId)
-                .map(u->{
+                .map(u -> {
                     userRepository.delete(u);
+                    System.out.println("사용자 삭제 완료: " + userId); // 로그 추가
                     return true;
                 })
-                .orElse(false);
+                .orElseGet(() -> {
+                    System.out.println("사용자 찾을 수 없음: " + userId); // 로그 추가
+                    return false;
+                });
     }
 
     @Transactional

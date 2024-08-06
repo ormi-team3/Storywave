@@ -35,6 +35,11 @@ public class CommentService {
     this.userRepository = userRepository;
   }
 
+  // 주어진 사용자 이름으로 댓글을 페이지네이션하여 찾는 메서드
+  public Page<Comment> findCommentsByUsername(String username, Pageable pageable) {
+    return commentRepository.findByUserUsername(username, pageable);
+  }
+
   public CommentDto createComment(CommentDto commentDto, Long postId, String userId) {
     Post posts =
             postRepository
