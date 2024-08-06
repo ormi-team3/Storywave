@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AdminController {
@@ -25,7 +26,7 @@ public class AdminController {
     @GetMapping("/userList")
     public String getAllUsers(HttpSession httpSession, Model model) {
 
-        /*String findUserId = (String)httpSession.getAttribute("userId");
+        String findUserId = (String)httpSession.getAttribute("userId");
 
         UserDto userDto = userService.getUserById(findUserId).orElse(null);
 
@@ -33,14 +34,12 @@ public class AdminController {
         if (userDto == null) {
             return "redirect:/login";
         }
-*/
+
         List<UserDto> users = userService.getAllUsers();
         model.addAttribute("users", users);
 
-        //String role = userService.getUserRole(userDto.getUserId());
+        String role = userService.getUserRole(userDto.getUserId());
 
-
-        String role = "ADMIN";
 
         if ("ADMIN".equals(role)){
             return "mypage/userList";
@@ -57,36 +56,6 @@ public class AdminController {
         return "mypage/adminMypage"; // 관리자 마이페이지 뷰
     }
 
- /*   @PutMapping("/updateUserStatus/{userId}")
-    public ResponseEntity<Map<String, String>> updateUserStatus(
-            @PathVariable("userId") String userId,
-            @RequestBody User updateUserStatus) {
-
-        User user = users.stream()
-                .filter(m -> m.getUserId().equals(userId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾지못하였습니다."));
-
-        user.setActiveStatus(updateUserStatus.isActiveStatus());
-
-        Map<String, String> response = new HashMap<>();
-        response.put("success", "true");
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/mypage/{userId}")
-    @ResponseBody
-    public ResponseEntity<UserDto> getUserInfo(@PathVariable String userId) {
-        User user = userService.findById(userId);
-        if (user != null) {
-            UserDto userDto = UserDto.fromUsers(user);
-            return ResponseEntity.ok(userDto);
-        } else {
-            // 적절한 오류 처리
-            return ResponseEntity.notFound().build();
-        }
-    }*/
 
     @GetMapping("/mypage/{userId}")
     @ResponseBody
@@ -102,13 +71,31 @@ public class AdminController {
 
     @PostMapping("/mypage/{userId}/reject")
     @ResponseBody
-    public ResponseEntity<UserDto> updateUserStatus(@PathVariable String userId,
-                                                    @RequestBody UserDto updateUserDto, @RequestBody BanDto updateBanDto) {
-        // User 상태 변경
+    public ResponseEntity<UserDto> updateUserStatus(
+            @PathVariable String userId,
+            @RequestBody Map<String, Object> requestBody) {
 
-        UserDto changeUserStatus = userService.changeUserStatus(userId,updateUserDto, updateBanDto);
+        // Map에서 UserDto와 BanDto 추출
+        UserDto userDto = parseUserDto(requestBody);
+        BanDto banDto = parseBanDto(requestBody);
 
-      return ResponseEntity.ok(changeUserStatus);
+        UserDto changeUserStatus = userService.changeUserStatus(userId, userDto, banDto);
+        return ResponseEntity.ok(changeUserStatus);
+    }
+
+    private UserDto parseUserDto(Map<String, Object> requestBody) {
+        // Map에서 UserDto 정보 추출
+        UserDto userDto = new UserDto();
+        userDto.setActiveStatus((Boolean) requestBody.get("isActiveStatus"));
+        return userDto;
+    }
+
+    private BanDto parseBanDto(Map<String, Object> requestBody) {
+        // Map에서 BanDto 정보 추출
+        BanDto banDto = new BanDto();
+        banDto.setBanReason((String) requestBody.get("banReason"));
+        banDto.setBanPeriod((Integer) requestBody.get("banPeriod"));
+        return banDto;
     }
 
 

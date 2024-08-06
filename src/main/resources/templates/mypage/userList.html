@@ -463,7 +463,26 @@
         // 상태 표시 업데이트
         function setStatus(newStatus) {
             document.querySelector('.dropbtn-click').textContent = newStatus;
-            closeDropdown(); // 드롭다운 닫기
+            closeDropdown();
+        }
+
+        //period를 숫자로 변경
+        function extractNumberFromString(text) {
+            const match = text.match(/\d+/);
+            return match ? parseInt(match[0], 10) : 0; // 숫자 반환, 없으면 0
+        }
+
+        // 현재 날짜와 시간을 'yyyy-MM-ddTHH:mm:ss' 형식으로 반환
+        function getFormattedDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         }
 
         // 변경사항 적용 및 서버로 전송
@@ -471,15 +490,22 @@
             const userId = document.getElementById('userId').value;
             const status = document.querySelector('.dropbtn-click').textContent;
             const reason = document.getElementById('statusReason').value;
-            const period = document.querySelector('.dropbtn-click').textContent; // 예를 들어 "7일 정지"와 같은 문자열
+            const periodText = document.querySelector('.dropbtn-click').textContent;
 
             // 상태에 따라 isActiveStatus를 설정
             const isActiveStatus = status === '회원';
 
+            // banPeriod의 숫자 부분만 추출
+            const banPeriod = extractNumberFromString(periodText);
+
+            // 현재 날짜를 포함
+            const banDate = getFormattedDate();
+
             const userParams = {
                 isActiveStatus: isActiveStatus,
                 banReason: reason,
-                banPeriod: period // 문자열을 그대로 전송
+                banPeriod: banPeriod,
+                banDate: banDate  // 추가된 부분
             };
 
             fetch(`http://localhost:8081/mypage/${userId}/reject`, {

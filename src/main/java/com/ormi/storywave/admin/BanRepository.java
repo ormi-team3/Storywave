@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface BanRepository extends JpaRepository<Ban, Integer> {
 
     Optional<Ban> findByUser_UserId(String userId);
+
 }
