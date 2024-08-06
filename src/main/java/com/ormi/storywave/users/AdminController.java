@@ -22,7 +22,7 @@ public class AdminController {
     @GetMapping("/userList")
     public String getAllUsers(HttpSession httpSession, Model model) {
 
-        String findUserId = (String)httpSession.getAttribute("userId");
+        /*String findUserId = (String)httpSession.getAttribute("userId");
 
         UserDto userDto = userService.getUserById(findUserId).orElse(null);
 
@@ -35,6 +35,11 @@ public class AdminController {
         model.addAttribute("users", users);
 
         String role = userService.getUserRole(userDto.getUserId());
+
+
+*/
+
+        String role = "ADMIN";
 
         if ("ADMIN".equals(role)){
             return "mypage/userList";
