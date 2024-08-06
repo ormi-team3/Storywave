@@ -365,6 +365,7 @@
         <thead>
         <tr>
             <th>이름</th>
+            <th>ID</th>
             <th>닉네임</th>
             <th>이메일</th>
             <th>날짜</th>
@@ -375,6 +376,7 @@
         <tbody id="post-list">
         <tr th:each="user : ${users}">
             <td th:text="${user.username}"> </td>
+            <td th:text="${user.userId}"> </td>
             <td th:text="${user.nickname}"> </td>
             <td th:text="${user.email}"> </td>
             <td th:text="${user.createdAt}"> </td>
@@ -558,117 +560,6 @@
                 closeDropdown();
             }
         });
-
-
-
-
-        /*document.addEventListener('DOMContentLoaded', () => {
-            const userList = document.getElementById('user-list');
-            const pagination = document.getElementById('pagination');
-            const postsPerPage = 10; // 페이지당 게시글 수
-            let currentPage = 1;
-            let users = [];
-
-            // 사용자 목록을 가져오는 함수
-            function fetchUsers() {
-                fetch('http://localhost:8081/admin/users') // 사용자 목록 API 엔드포인트
-                    .then(response => response.json())
-                    .then(data => {
-                        users = data; // 사용자 데이터 저장
-                        updatePagination(users.length); // 페이지네이션 업데이트
-                        displayUsers(users, currentPage); // 첫 페이지 사용자 목록 표시
-                    })
-                    .catch(error => console.error('사용자 데이터 가져오기 오류:', error));
-            }
-
-            // 사용자 목록을 표시하는 함수
-            function displayUsers(pageNumber) {
-                const paginatedUsers = paginate(pageNumber, postsPerPage);
-                paginatedUsers.slice(pageNumber, postsPerPage);
-            }
-
-            // 페이지네이션 버튼을 업데이트하는 함수
-            function updatePagination(totalItems) {
-                const totalPages = Math.ceil(totalItems / postsPerPage);
-                pagination.innerHTML = Array.from({length: totalPages}, (_, i) => `
-                <button class="${i + 1 === currentPage ? 'active' : ''}" data-page="${i + 1}">${i + 1}</button>
-                `).join('');
-
-                // 페이지네이션 버튼 클릭 이벤트
-                pagination.querySelectorAll('button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        currentPage = parseInt(button.getAttribute('data-page'), 10);
-                        displayUsers(users, currentPage);
-                        updatePagination(users.length); // 페이지네이션 업데이트
-                    });
-                });
-            }
-
-            // 페이지네이션 함수
-            function paginate(items, pageNumber, pageSize) {
-                const start = (pageNumber - 1) * pageSize;
-                const end = start + pageSize;
-                return items.slice(start, end);
-            }
-
-            // 초기 사용자 목록 로드
-            fetchUsers();
-        });*/
-
-        /*function toggleDropdown() {
-            dropdownContent.classList.toggle('show');
-        }
-
-        function selectMenuItem(event) {
-            if (event.target.classList.contains('userControl')) {
-                dropbtn.innerText = event.target.innerText;
-                dropdownContent.classList.remove('show');
-            }
-        }
-
-        dropbtn.addEventListener('click', toggleDropdown);
-        dropdownContent.addEventListener('click', selectMenuItem);
-
-        function setStatus(status) {
-            document.querySelector('.dropbtn_click').innerText = status;
-            document.querySelector('.user-status-reason').value = status;
-        }
-
-*/
-        /* 모달 열기 버튼 클릭 이벤트 설정
-        document.querySelectorAll('.btn-open-modal').forEach(button => {
-            button.addEventListener('click', () => {
-                openModal(); // 모달 열기
-            });
-        });
-
-        // 모달 닫기 버튼 클릭 이벤트 설정
-        document.querySelectorAll('.close').forEach(button => {
-            button.addEventListener('click', () => {
-                closeModal(); // 모달 닫기
-            });
-        });*/
-
-
-        /* function openUserUpdateModal(activeStatus) {
-             const userStatus = "${user.activeStatus}";
-             const reason = "${user.reason}";
-             const id = "${user.id}";
-                 $.ajax({
-                     url: `/updateUserStatus/{id}`,
-                     type: 'GET',
-                     dataType: 'json',
-                     success: function (response) {
-                         document.getElementById('modifyContent').value = response.content;
-                         document.getElementById('modal').setAttribute('onclick', `updateUserStatus(${user.activeStatus})`);
-                         openModal();
-                     },
-                     error: function (request, status, error) {
-                         console.log(error);
-                     }
-                 })*/
-
-
 
 
 
