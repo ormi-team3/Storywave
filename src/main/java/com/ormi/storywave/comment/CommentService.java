@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @Transactional
 public class CommentService {
@@ -27,29 +26,29 @@ public class CommentService {
 
   @Autowired
   public CommentService(
-          CommentRepository commentRepository,
-          PostRepository postRepository,
-          UserRepository userRepository) {
+      CommentRepository commentRepository,
+      PostRepository postRepository,
+      UserRepository userRepository) {
     this.commentRepository = commentRepository;
     this.postRepository = postRepository;
     this.userRepository = userRepository;
   }
 
-  // 주어진 사용자 이름으로 댓글을 찾는 메서드
-  public List<Comment> findCommentsByUsername(String username) {
-    return commentRepository.findByUserUsername(username);
+  // 주어진 사용자 이름으로 댓글을 페이지네이션하여 찾는 메서드
+  public Page<Comment> findCommentsByUsername(String username, Pageable pageable) {
+    return commentRepository.findByUserUsername(username, pageable);
   }
 
   public CommentDto createComment(CommentDto commentDto, Long postId, String userId) {
     Post posts =
-            postRepository
-                    .findById(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        postRepository
+            .findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
     User users =
-            userRepository
-                    .findByUserId(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        userRepository
+            .findByUserId(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
     Comment comment = commentDto.toComment();
     comment.setCreatedAt(LocalDateTime.now());
@@ -66,49 +65,52 @@ public class CommentService {
   @Transactional(readOnly = true)
   public List<CommentDto> getAllComments(Long postId) {
     return commentRepository.findByPost_Id(postId).stream()
-            .map(CommentDto::fromComment)
-            .collect(Collectors.toList());
+        .map(CommentDto::fromComment)
+        .collect(Collectors.toList());
   }
 
   public CommentDto getCommentById(Long commentId) {
     return commentRepository
-            .findById(commentId)
-            .map(CommentDto::fromComment)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        .findById(commentId)
+        .map(CommentDto::fromComment)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
   }
 
   // 댓글 작성자만 수정 가능
   public Optional<CommentDto> updateComment(
-          Long postId, Long commentId, CommentDto commentDto, String userId) {
+      Long postId, Long commentId, CommentDto commentDto, String userId) {
     return commentRepository
-            .findByPost_IdAndCommentId(postId, commentId)
-            .filter(comment -> comment.getUser().getUserId().equals(userId))
-            .map(
-                    comment -> {
-                      comment.setContent(commentDto.getContent());
-                      comment.setUpdatedAt(LocalDateTime.now());
-                      return CommentDto.fromComment(commentRepository.save(comment));
-                    });
+        .findByPost_IdAndCommentId(postId, commentId)
+        .filter(comment -> comment.getUser().getUserId().equals(userId))
+        .map(
+            comment -> {
+              comment.setContent(commentDto.getContent());
+              comment.setUpdatedAt(LocalDateTime.now());
+              return CommentDto.fromComment(commentRepository.save(comment));
+            });
   }
 
   // 댓글 작성자나, 운영자만 댓글 삭제 가능
   public boolean deleteComment(Long postId, Long commentId, String userId) {
-    Post posts = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+    Post posts =
+        postRepository
+            .findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("Post not found"));
     UserDto users =
-            userRepository
-                    .findByUserId(userId)
-                    .map(UserDto::fromUsers)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+        userRepository
+            .findByUserId(userId)
+            .map(UserDto::fromUsers)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
     return commentRepository
-            .findByPost_IdAndCommentId(postId, commentId)
-            .filter(
-                    post -> post.getUser().getUserId().equals(userId) || users.getRole().equals("admin"))
-            .map(
-                    comment -> {
-                      commentRepository.delete(comment);
-                      return true;
-                    })
-            .orElse(false);
+        .findByPost_IdAndCommentId(postId, commentId)
+        .filter(
+            post -> post.getUser().getUserId().equals(userId) || users.getRole().equals("admin"))
+        .map(
+            comment -> {
+              commentRepository.delete(comment);
+              return true;
+            })
+        .orElse(false);
   }
 
   public Page<Comment> findPaginated(int page, int pageSize) {
@@ -116,7 +118,7 @@ public class CommentService {
     return commentRepository.findAll(pageable);
   }
 
-  public Integer commentCount(Long postId){
+  public Integer commentCount(Long postId) {
     return commentRepository.countCommentsByPost_Id(postId);
   }
 }

@@ -38,7 +38,10 @@ public class PostService {
   @Value("${file.upload-dir}")
   private String uploadDir;
 
-  // 페이지 번호, 크기를 기반으로 페이지네이션된 게시물 반환 메서드
+  public Page<Post> getPostsByUserId(String userId, Pageable pageable) {
+    return postRepository.findByUserUserId(userId, pageable);
+  }
+
   public Page<Post> findPaginated(int page, int pageSize) {
     Pageable pageable = PageRequest.of(page - 1, pageSize);
     return postRepository.findAll(pageable);
@@ -49,20 +52,26 @@ public class PostService {
     List<Post> posts = postRepository.findAll(); // 모든 게시글을 가져옵니다.
 
     return posts.stream()
-            .filter(post ->
-                    post.getCategories().stream().anyMatch(category ->
-                            category.getBoard().getPostTypeId().equals(0L) ||
-                                    category.getBoard().getPostTypeId().equals(post_type_id)
-                    )
-            )
-            .map(post -> {
+        .filter(
+            post ->
+                post.getCategories().stream()
+                    .anyMatch(
+                        category ->
+                            category.getBoard().getPostTypeId().equals(0L)
+                                || category.getBoard().getPostTypeId().equals(post_type_id)))
+        .map(
+            post -> {
               Long commentCount = postRepository.countCommentsByPostId(post.getId());
-              Set<CategoryDto> categoryDtos = post.getCategories().stream()
-                      .map(category -> new CategoryDto(
-                              category.getId(),
-                              new BoardDto(category.getBoard().getPostTypeId(), category.getBoard().getViewPost()),
-                              category.getName()
-                      ))
+              Set<CategoryDto> categoryDtos =
+                  post.getCategories().stream()
+                      .map(
+                          category ->
+                              new CategoryDto(
+                                  category.getId(),
+                                  new BoardDto(
+                                      category.getBoard().getPostTypeId(),
+                                      category.getBoard().getViewPost()),
+                                  category.getName()))
                       .collect(Collectors.toSet());
 
               User user = post.getUser();
@@ -70,38 +79,43 @@ public class PostService {
               String nickname = (user != null) ? user.getNickname() : "Unknown";
 
               return new PostListDto(
-                      post.getId(),
-                      post.getTitle(),
-                      post.getUpdatedAt(),
-                      post.getThumbs(),
-                      categoryDtos,
-                      commentCount,
-                      userId,   // UserId 정보 추가
-                      nickname  // Nickname 정보 추가
-              );
+                  post.getId(),
+                  post.getTitle(),
+                  post.getUpdatedAt(),
+                  post.getThumbs(),
+                  categoryDtos,
+                  commentCount,
+                  userId, // UserId 정보 추가
+                  nickname // Nickname 정보 추가
+                  );
             })
-            .collect(Collectors.toList());
+        .collect(Collectors.toList());
+  }
 
-}
   public Post createPost(
-          Post post,
-          MultipartFile[] imageFiles,
-          List<String> categoryNames,
-          Long post_type_id,
-          Integer thumbs,String userid) {  // User 파라미터 추가
+      Post post,
+      MultipartFile[] imageFiles,
+      List<String> categoryNames,
+      Long post_type_id,
+      Integer thumbs,
+      String userid) { // User 파라미터 추가
 
-
-    User user = userRepository.findById(userid)
+    User user =
+        userRepository
+            .findById(userid)
             .orElseThrow(() -> new RuntimeException("User not found with id: " + userid));
 
     // Board 설정
-    Board board = boardRepository.findByPostTypeId(post_type_id)
-            .orElseGet(() -> {
-              Board newBoard = new Board();
-              newBoard.setPostTypeId(post_type_id);
-              newBoard.setViewPost(0); // view_post 필드를 0으로 설정합니다.
-              return boardRepository.save(newBoard);
-            });
+    Board board =
+        boardRepository
+            .findByPostTypeId(post_type_id)
+            .orElseGet(
+                () -> {
+                  Board newBoard = new Board();
+                  newBoard.setPostTypeId(post_type_id);
+                  newBoard.setViewPost(0); // view_post 필드를 0으로 설정합니다.
+                  return boardRepository.save(newBoard);
+                });
     post.setBoard(board);
 
     // Thumbs 설정
@@ -110,13 +124,16 @@ public class PostService {
     // Categories 설정
     Set<Category> categories = new HashSet<>();
     for (String categoryName : categoryNames) {
-      Category category = categoryRepository.findByName(categoryName)
-              .orElseGet(() -> {
-                Category newCategory = new Category();
-                newCategory.setName(categoryName);
-                newCategory.setBoard(board); // 카테고리에도 Board 설정
-                return categoryRepository.save(newCategory);
-              });
+      Category category =
+          categoryRepository
+              .findByName(categoryName)
+              .orElseGet(
+                  () -> {
+                    Category newCategory = new Category();
+                    newCategory.setName(categoryName);
+                    newCategory.setBoard(board); // 카테고리에도 Board 설정
+                    return categoryRepository.save(newCategory);
+                  });
       categories.add(category);
     }
     post.setCategories(categories);
