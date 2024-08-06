@@ -1,6 +1,7 @@
 package com.ormi.storywave.users;
 
 
+import com.ormi.storywave.admin.BanDto;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,9 +103,10 @@ public class AdminController {
     @PostMapping("/mypage/{userId}/reject")
     @ResponseBody
     public ResponseEntity<UserDto> updateUserStatus(@PathVariable String userId,
-                                    @RequestBody UserDto updateUserDto) {
+                                                    @RequestBody UserDto updateUserDto, @RequestBody BanDto updateBanDto) {
         // User 상태 변경
-        UserDto changeUserStatus = userService.changeUserStatus(userId,updateUserDto);
+
+        UserDto changeUserStatus = userService.changeUserStatus(userId,updateUserDto, updateBanDto);
 
       return ResponseEntity.ok(changeUserStatus);
     }

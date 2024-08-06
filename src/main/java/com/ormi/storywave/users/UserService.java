@@ -1,11 +1,15 @@
 package com.ormi.storywave.users;
 
 
+import com.ormi.storywave.admin.Ban;
+import com.ormi.storywave.admin.BanDto;
+import com.ormi.storywave.admin.BanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,10 +20,12 @@ import static com.ormi.storywave.users.UserDto.fromUsers;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final BanService banService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BanService banService) {
         this.userRepository = userRepository;
+        this.banService = banService;
     }
 
 
@@ -126,17 +132,25 @@ public class UserService {
         return userRepository.findByUserId(userId).orElse(null);
     }
 
-    public UserDto changeUserStatus(String userId, UserDto userDto) {
+    public UserDto changeUserStatus(String userId, UserDto userDto, BanDto banDto) {
         User user = findByUserId(userId);
+
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
 
 
+/*
+
+        String endDate = banDto.getBanDate().plusDays(banDto.getBanPeriod())
+                .format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"));
+
+*/
+
         // User 상태 업데이트
         user.setActiveStatus(userDto.isActiveStatus());
-        user.setBanReason(userDto.getBanReason()); // UserDto에 추가된 banReason 설정
-        user.setBanPeriod(userDto.getBanPeriod()); // UserDto에 추가된 banPeriod 설정
+        ban.setBanReason(banDto.getBanReason()); // UserDto에 추가된 banReason 설정
+        user.setBanPeriod(banDto.getBanPeriod()); // UserDto에 추가된 banPeriod 설정
 
         // 변경 사항 저장
         user.setUpdatedAt(LocalDateTime.now());
