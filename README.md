@@ -10,9 +10,9 @@
 <br>
 
 ####   HOW ABOUT AS
-  🐰 팀장 . 박예린 <br><br>
+  🐰 팀원 . 박예린 <br><br>
   🐿️ 팀원 . 김주영 <br><br>
-  🐻 팀원 . 노유진 <br><br>
+  🐻 팀장 . 노유진 <br><br>
   🐶 팀원 . 문석준 <br><br>
   🦁 팀원 . 박준호 <br><br><br>
 #### OUR PROJECT
