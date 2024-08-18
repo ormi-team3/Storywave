@@ -60,18 +60,23 @@ public class PostService {
     return posts.stream()
             .filter(post ->
                     post.getCategories().stream().anyMatch(category ->
-                            category.getBoard().getPostTypeId().equals(0L) ||
-                                    category.getBoard().getPostTypeId().equals(post_type_id)
+                            Optional.ofNullable(category.getBoard())
+                                    .map(board -> board.getPostTypeId().equals(0L) || board.getPostTypeId().equals(post_type_id))
+                                    .orElse(false)
                     )
             )
             .map(post -> {
               Long commentCount = postRepository.countCommentsByPostId(post.getId());
               Set<CategoryDto> categoryDtos = post.getCategories().stream()
-                      .map(category -> new CategoryDto(
-                              category.getId(),
-                              new BoardDto(category.getBoard().getPostTypeId(), category.getBoard().getViewPost()),
-                              category.getName()
-                      ))
+                      .map(category -> Optional.ofNullable(category.getBoard())
+                              .map(board -> new CategoryDto(
+                                      category.getId(),
+                                      new BoardDto(board.getPostTypeId(), board.getViewPost()),
+                                      category.getName()
+                              ))
+                                      .orElse(null)
+                      )
+                      .filter(Objects::nonNull)
                       .collect(Collectors.toSet());
 
               User user = post.getUser();
