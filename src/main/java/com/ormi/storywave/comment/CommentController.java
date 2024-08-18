@@ -15,17 +15,17 @@ public class CommentController {
     this.commentService = commentService;
   }
 
-  @GetMapping("/mypage/mycomment")
-  public String getAllComments(
-      Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
-    int pageSize = 10;
-    Page<Comment> commentPage = commentService.findPaginated(page, pageSize);
-
-    model.addAttribute("comments", commentPage.getContent());
-    model.addAttribute("currentPage", page);
-    model.addAttribute("totalPages", commentPage.getTotalPages());
-    return "mypage/mycomment";
-  }
+//  @GetMapping("/mypage/mycomment")
+//  public String getAllComments(
+//      Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
+//    int pageSize = 10;
+//    Page<Comment> commentPage = commentService.findPaginated(page, pageSize);
+//
+//    model.addAttribute("comments", commentPage.getContent());
+//    model.addAttribute("currentPage", page);
+//    model.addAttribute("totalPages", commentPage.getTotalPages());
+//    return "mypage/mycomment";
+//  }
 
   //    @PostMapping("/comments")
   //    @ResponseBody

@@ -11,17 +11,15 @@ import lombok.Setter;
 @Entity
 @Table(name = "post_category")
 public class PostCategory {
-    @EmbeddedId
-    private PostCategoryId id;
+  @EmbeddedId private PostCategoryId id;
 
-    @MapsId("postId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+  @MapsId("postId")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "post_id", nullable = false)
+  private Post post;
 
-    @MapsId("categoryId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
-
+  @MapsId("categoryId")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "category_id", nullable = false)
+  private Category category;
 }

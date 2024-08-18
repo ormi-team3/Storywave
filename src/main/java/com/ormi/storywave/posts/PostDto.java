@@ -35,7 +35,8 @@ public class PostDto implements Serializable {
 
   public static PostDto fromPost(Post post) {
 
-    PostDto postDto = PostDto.builder()
+    PostDto postDto =
+        PostDto.builder()
             .postId(post.getId())
             .postTypeId(post.getBoard().getPostTypeId())
             .title(post.getTitle())
@@ -47,10 +48,7 @@ public class PostDto implements Serializable {
 
     if (post.getComments() != null) {
       postDto.setComments(
-              post.getComments()
-                      .stream()
-                      .map(CommentDto::fromComment)
-                      .collect(Collectors.toList()));
+          post.getComments().stream().map(CommentDto::fromComment).collect(Collectors.toList()));
     }
     return postDto;
   }
@@ -66,10 +64,10 @@ public class PostDto implements Serializable {
 
     if (this.comments != null) {
       this.comments.forEach(
-              commentDto -> {
-                Comment comment = commentDto.toComment();
-                post.getComments().add(comment);
-              });
+          commentDto -> {
+            Comment comment = commentDto.toComment();
+            post.getComments().add(comment);
+          });
     }
 
     return post;

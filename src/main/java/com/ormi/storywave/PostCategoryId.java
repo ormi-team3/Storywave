@@ -14,27 +14,27 @@ import java.util.Objects;
 @Setter
 @Embeddable
 public class PostCategoryId implements Serializable {
-    private static final long serialVersionUID = 2431666313017562197L;
-    @NotNull
-    @Column(name = "post_id", nullable = false)
-    private Long postId;
+  private static final long serialVersionUID = 2431666313017562197L;
 
-    @NotNull
-    @Column(name = "category_id", nullable = false)
-    private Long categoryId;
+  @NotNull
+  @Column(name = "post_id", nullable = false)
+  private Long postId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        PostCategoryId entity = (PostCategoryId) o;
-        return Objects.equals(this.postId, entity.postId) &&
-                Objects.equals(this.categoryId, entity.categoryId);
-    }
+  @NotNull
+  @Column(name = "category_id", nullable = false)
+  private Long categoryId;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(postId, categoryId);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+    PostCategoryId entity = (PostCategoryId) o;
+    return Objects.equals(this.postId, entity.postId)
+        && Objects.equals(this.categoryId, entity.categoryId);
+  }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(postId, categoryId);
+  }
 }

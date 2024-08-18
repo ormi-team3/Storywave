@@ -31,34 +31,34 @@ public class UserDto implements Serializable {
   private String banPeriod;
   private String banReason;
 
-
-//  private List<CommentDto> comments = new ArrayList<>();
-//  private List<PostDto> posts = new ArrayList<>();
+  //  private List<CommentDto> comments = new ArrayList<>();
+  //  private List<PostDto> posts = new ArrayList<>();
 
   // Entity -> DTO
   public static UserDto fromUsers(User user) {
     UserDto userDto =
-            UserDto.builder()
-                    .userId(user.getUserId())
-                    .password(user.getPassword())
-                    .nickname(user.getNickname())
-                    .username(user.getUsername())
-                    .email(user.getEmail())
-                    .role(user.getRole())
-                    .activeStatus(user.isActiveStatus())
-                    .createdAt(user.getCreatedAt())
-                    .updatedAt(user.getUpdatedAt())
-                    .banReason(user.getBanReason())
-                    .banPeriod(user.getBanPeriod())
-                    .build();
-//    if (user.getComments() != null) {
-//      usersDto.setComments(
-//              user.getComments().stream().map(CommentDto::fromComment).collect(Collectors.toList()));
-//    }
-//    if (user.getPosts() != null) {
-//      usersDto.setPosts(
-//              user.getPosts().stream().map(PostDto::fromPost).collect(Collectors.toList()));
-//    }
+        UserDto.builder()
+            .userId(user.getUserId())
+            .password(user.getPassword())
+            .nickname(user.getNickname())
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .role(user.getRole())
+            .activeStatus(user.isActiveStatus())
+            .createdAt(user.getCreatedAt())
+            .updatedAt(user.getUpdatedAt())
+            .banReason(user.getBanReason())
+            .banPeriod(user.getBanPeriod())
+            .build();
+    //    if (user.getComments() != null) {
+    //      usersDto.setComments(
+    //
+    // user.getComments().stream().map(CommentDto::fromComment).collect(Collectors.toList()));
+    //    }
+    //    if (user.getPosts() != null) {
+    //      usersDto.setPosts(
+    //              user.getPosts().stream().map(PostDto::fromPost).collect(Collectors.toList()));
+    //    }
     return userDto;
   }
 
@@ -77,28 +77,26 @@ public class UserDto implements Serializable {
     user.setBanReason(this.banReason);
     user.setBanPeriod(this.banPeriod);
 
-//    if (this.comments != null) {
-//      this.comments.forEach(
-//              commentDto -> {
-//                Comment comment = commentDto.toComment();
-//                user.getComments().add(comment);
-//              });
-//    }
-//    if (this.posts != null) {
-//      this.posts.forEach(
-//              postDto -> {
-//                Post post = postDto.toPost();
-//                user.getPosts().add(post);
-//              });
-//    }
+    //    if (this.comments != null) {
+    //      this.comments.forEach(
+    //              commentDto -> {
+    //                Comment comment = commentDto.toComment();
+    //                user.getComments().add(comment);
+    //              });
+    //    }
+    //    if (this.posts != null) {
+    //      this.posts.forEach(
+    //              postDto -> {
+    //                Post post = postDto.toPost();
+    //                user.getPosts().add(post);
+    //              });
+    //    }
     return user;
   }
 
   public Integer getBanPeriodAsInteger() {
     return extractNumberFromString(banPeriod);
   }
-
-
 
   private Integer extractNumberFromString(String input) {
     if (input == null || input.isEmpty()) {

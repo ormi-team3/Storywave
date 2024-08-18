@@ -72,7 +72,6 @@ public class User {
   @OneToMany(mappedBy = "user")
   private List<UserPostLike> likes = new ArrayList<>();
 
-
   @PrePersist
   protected void onCreate() {
     createdAt = LocalDateTime.now();

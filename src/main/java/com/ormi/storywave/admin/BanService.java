@@ -9,16 +9,13 @@ import java.util.Optional;
 @Service
 public class BanService {
 
-    private final BanRepository banRepository;
+  private final BanRepository banRepository;
 
-    public BanService(BanRepository banRepository) {
-        this.banRepository = banRepository;
-    }
+  public BanService(BanRepository banRepository) {
+    this.banRepository = banRepository;
+  }
 
-    public BanDto getBanByUserId(String userId) {
-        return banRepository.findByUser_UserId(userId)
-                .map(BanDto::fromBan)
-                .orElse(null);
-    }
-
+  public BanDto getBanByUserId(String userId) {
+    return banRepository.findByUser_UserId(userId).map(BanDto::fromBan).orElse(null);
+  }
 }

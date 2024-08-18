@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-//@Value
+// @Value
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,27 +18,24 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long commentId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long commentId;
 
-    @Column
-    private String content;
+  @Column private String content;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 }
-
