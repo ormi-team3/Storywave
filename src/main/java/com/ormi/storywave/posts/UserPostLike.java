@@ -14,17 +14,15 @@ import lombok.Setter;
 @Table(name = "user_post_like")
 @Entity
 public class UserPostLike {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 }

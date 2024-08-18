@@ -42,10 +42,9 @@ public class PostService {
 
   @Value("${file.upload-dir}")
   private String uploadDir;
-  @Autowired
-  private CommentService commentService;
-    @Autowired
-    private UserService userService;
+
+  @Autowired private CommentService commentService;
+  @Autowired private UserService userService;
 
   // 페이지 번호, 크기를 기반으로 페이지네이션된 게시물 반환 메서드
   public Page<Post> findPaginated(int page, int pageSize) {
@@ -58,24 +57,33 @@ public class PostService {
     List<Post> posts = postRepository.findAll(); // 모든 게시글을 가져옵니다.
 
     return posts.stream()
-            .filter(post ->
-                    post.getCategories().stream().anyMatch(category ->
+        .filter(
+            post ->
+                post.getCategories().stream()
+                    .anyMatch(
+                        category ->
                             Optional.ofNullable(category.getBoard())
-                                    .map(board -> board.getPostTypeId().equals(0L) || board.getPostTypeId().equals(post_type_id))
-                                    .orElse(false)
-                    )
-            )
-            .map(post -> {
+                                .map(
+                                    board ->
+                                        board.getPostTypeId().equals(0L)
+                                            || board.getPostTypeId().equals(post_type_id))
+                                .orElse(false)))
+        .map(
+            post -> {
               Long commentCount = postRepository.countCommentsByPostId(post.getId());
-              Set<CategoryDto> categoryDtos = post.getCategories().stream()
-                      .map(category -> Optional.ofNullable(category.getBoard())
-                              .map(board -> new CategoryDto(
-                                      category.getId(),
-                                      new BoardDto(board.getPostTypeId(), board.getViewPost()),
-                                      category.getName()
-                              ))
-                                      .orElse(null)
-                      )
+              Set<CategoryDto> categoryDtos =
+                  post.getCategories().stream()
+                      .map(
+                          category ->
+                              Optional.ofNullable(category.getBoard())
+                                  .map(
+                                      board ->
+                                          new CategoryDto(
+                                              category.getId(),
+                                              new BoardDto(
+                                                  board.getPostTypeId(), board.getViewPost()),
+                                              category.getName()))
+                                  .orElse(null))
                       .filter(Objects::nonNull)
                       .collect(Collectors.toSet());
 
@@ -84,28 +92,28 @@ public class PostService {
               String nickname = (user != null) ? user.getNickname() : "Unknown";
 
               return new PostListDto(
-                      post.getId(),
-                      post.getTitle(),
-                      post.getUpdatedAt(),
-                      post.getThumbs(),
-                      categoryDtos,
-                      commentCount,
-                      userId,   // UserId 정보 추가
-                      nickname  // Nickname 정보 추가
-              );
+                  post.getId(),
+                  post.getTitle(),
+                  post.getUpdatedAt(),
+                  post.getThumbs(),
+                  categoryDtos,
+                  commentCount,
+                  userId, // UserId 정보 추가
+                  nickname // Nickname 정보 추가
+                  );
             })
-            .collect(Collectors.toList());
+        .collect(Collectors.toList());
+  }
 
-}
   public Post createPost(
-          Post post,
-          MultipartFile[] imageFiles,
-          List<String> categoryNames,
-          Long post_type_id,
-          Integer thumbs, HttpSession httpSession) {  // User 파라미터 추가
+      Post post,
+      MultipartFile[] imageFiles,
+      List<String> categoryNames,
+      Long post_type_id,
+      Integer thumbs,
+      HttpSession httpSession) { // User 파라미터 추가
 
-
-    String findUserId = (String)httpSession.getAttribute("userId");
+    String findUserId = (String) httpSession.getAttribute("userId");
 
     UserDto userDto = userService.getUserById(findUserId).orElse(null);
 
@@ -115,7 +123,9 @@ public class PostService {
     }*/
 
     // 사용자 정보를 데이터베이스에서 가져옵니다.
-    User user = userRepository.findById(findUserId)
+    User user =
+        userRepository
+            .findById(findUserId)
             .orElseThrow(() -> new RuntimeException("User not found with id: " + findUserId));
 
     String role = user.getRole();
@@ -124,23 +134,26 @@ public class PostService {
       if (!"ADMIN".equals(role)) {
         throw new RuntimeException("공지사항은 관리자만 작성 가능합니다.");
       }
-      //삭제 가능!
+      // 삭제 가능!
     } else if (post_type_id == 1 || post_type_id == 2) {
-        if("ADMIN".equals(role) ){
-          throw new RuntimeException("관리자는 공지사항만 작성 가능합니다.");
-        }
+      if ("ADMIN".equals(role)) {
+        throw new RuntimeException("관리자는 공지사항만 작성 가능합니다.");
+      }
     } else {
       throw new RuntimeException("비정상적인 접근입니다.");
     }
 
     // Board 설정
-    Board board = boardRepository.findByPostTypeId(post_type_id)
-            .orElseGet(() -> {
-              Board newBoard = new Board();
-              newBoard.setPostTypeId(post_type_id);
-              newBoard.setViewPost(0); // view_post 필드를 0으로 설정합니다.
-              return boardRepository.save(newBoard);
-            });
+    Board board =
+        boardRepository
+            .findByPostTypeId(post_type_id)
+            .orElseGet(
+                () -> {
+                  Board newBoard = new Board();
+                  newBoard.setPostTypeId(post_type_id);
+                  newBoard.setViewPost(0); // view_post 필드를 0으로 설정합니다.
+                  return boardRepository.save(newBoard);
+                });
     post.setBoard(board);
 
     // Thumbs 설정
@@ -149,13 +162,16 @@ public class PostService {
     // Categories 설정
     Set<Category> categories = new HashSet<>();
     for (String categoryName : categoryNames) {
-      Category category = categoryRepository.findByName(categoryName)
-              .orElseGet(() -> {
-                Category newCategory = new Category();
-                newCategory.setName(categoryName);
-                newCategory.setBoard(board); // 카테고리에도 Board 설정
-                return categoryRepository.save(newCategory);
-              });
+      Category category =
+          categoryRepository
+              .findByName(categoryName)
+              .orElseGet(
+                  () -> {
+                    Category newCategory = new Category();
+                    newCategory.setName(categoryName);
+                    newCategory.setBoard(board); // 카테고리에도 Board 설정
+                    return categoryRepository.save(newCategory);
+                  });
       categories.add(category);
     }
     post.setCategories(categories);
@@ -226,11 +242,11 @@ public class PostService {
 
       // 이미지 객체 설정
       Image image = new Image();
-      image.setUrl(imageUrl);  // 웹 경로를 URL로 설정
+      image.setUrl(imageUrl); // 웹 경로를 URL로 설정
       image.setPost(post);
       post.getImages().add(image);
 
-      return imageUrl;  // 반환값을 URL로 설정
+      return imageUrl; // 반환값을 URL로 설정
     } catch (IOException e) {
       e.printStackTrace();
       System.err.println("Failed to save image: " + e.getMessage());
@@ -254,7 +270,9 @@ public class PostService {
 
   @Transactional
   public boolean deletePosts(Long postTypeId, Long postId) {
-    Post post = postRepository.findById(postId)
+    Post post =
+        postRepository
+            .findById(postId)
             .orElseThrow(() -> new IllegalArgumentException("포스트를 찾을 수 없습니다"));
     // 댓글 삭제
     commentService.deleteCommentsByPostId(postId);

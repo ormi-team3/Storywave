@@ -23,7 +23,8 @@ public class MyPageController {
   private final UserService userService;
 
   @Autowired
-  public MyPageController(CommentService commentService, PostService postsService, UserService userService) {
+  public MyPageController(
+      CommentService commentService, PostService postsService, UserService userService) {
     this.commentService = commentService;
     this.postService = postsService;
     this.userService = userService;
@@ -34,7 +35,7 @@ public class MyPageController {
   @GetMapping
   public String showMyPage(HttpSession httpSession, Model model) {
 
-    String findUserId = (String)httpSession.getAttribute("userId");
+    String findUserId = (String) httpSession.getAttribute("userId");
 
     UserDto userDto = userService.getUserById(findUserId).orElse(null);
 
@@ -45,7 +46,7 @@ public class MyPageController {
 
     String role = userService.getUserRole(userDto.getUserId());
     System.out.println(role);
-    if ("ADMIN".equals(role)){
+    if ("ADMIN".equals(role)) {
       return "mypage/adminMypage";
     } else if ("USER".equals(role)) {
       return "mypage/mypage";
@@ -74,7 +75,7 @@ public class MyPageController {
 
   @GetMapping("/update-user")
   public String updateUserForm(Model model, HttpSession session) {
-    String findUserId = (String)session.getAttribute("userId");
+    String findUserId = (String) session.getAttribute("userId");
 
     UserDto userDto = userService.getUserById(findUserId).orElse(null);
 
@@ -85,7 +86,7 @@ public class MyPageController {
 
   @PostMapping("/update-user")
   public String updateUser(@ModelAttribute("user") UserDto userDto, Model model) {
-    UserDto updateduser = userService.updateUser(userDto.getUserId(),userDto).orElse(null);
+    UserDto updateduser = userService.updateUser(userDto.getUserId(), userDto).orElse(null);
     model.addAttribute("user", updateduser);
 
     return "mypage/update_user";

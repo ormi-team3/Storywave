@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import java.util.List;
 
-
 @Controller
 @RequestMapping("/board")
 public class PostController {
@@ -35,14 +34,18 @@ public class PostController {
 
   // 게시물 상세화면 조회
   @GetMapping("/{post_type_id}/post/{postId}")
-  public String postsDetail(@PathVariable("post_type_id") Long postTypeId,
-                            @PathVariable("postId") Long postId, HttpSession session, Model model) {
-//  public String postsDetail(@PathVariable("post_type_id") Long postTypeId,
-//          @PathVariable("postId") Long postId, @RequestParam("userId") String userId, Model model) {
+  public String postsDetail(
+      @PathVariable("post_type_id") Long postTypeId,
+      @PathVariable("postId") Long postId,
+      HttpSession session,
+      Model model) {
+    //  public String postsDetail(@PathVariable("post_type_id") Long postTypeId,
+    //          @PathVariable("postId") Long postId, @RequestParam("userId") String userId, Model
+    // model) {
     System.out.println("postsDetail 실행");
-        String userId = (String) session.getAttribute("userId");
+    String userId = (String) session.getAttribute("userId");
 
-    if (userId != null){
+    if (userId != null) {
       Optional<UserDto> user = userService.getUserById(userId);
       if (user.isPresent()) {
         model.addAttribute("login", true);
@@ -56,14 +59,16 @@ public class PostController {
     }
 
     // 게시물
-    PostDto posts =
-            postService
-                    .getPostByPostTypeIdAndPostId(postTypeId, postId);
+    PostDto posts = postService.getPostByPostTypeIdAndPostId(postTypeId, postId);
 
-    UserDto users = userService.getUserById(userId)
+    UserDto users =
+        userService
+            .getUserById(userId)
             .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
 
-    String writer = userService.getUserByPostId(postId)
+    String writer =
+        userService
+            .getUserByPostId(postId)
             .map(UserDto::getNickname)
             .orElseThrow(() -> new IllegalArgumentException("해당 포스트의 작성자를 찾을 수 없습니다."));
 
@@ -83,7 +88,7 @@ public class PostController {
     model.addAttribute("like", like); // 공감
     model.addAttribute("users", users); // 유저
     model.addAttribute("writer", writer); // 글쓴이
-    model.addAttribute("posts", posts); //게시물
+    model.addAttribute("posts", posts); // 게시물
     model.addAttribute("isAdmin", isAdmin); // 권한
 
     model.addAttribute("users", users); // 유저
@@ -97,10 +102,14 @@ public class PostController {
 
   // 게시물 수정 페이지 조회
   @GetMapping("/{post_type_id}/post/{postId}/edit")
-  public String updatePost(@PathVariable("post_type_id") Long postTypeId, @PathVariable("postId") Long postId, HttpSession session, Model model){
-//  public String updatePost(@PathVariable("post_type_id") Long postTypeId,
-//                           @PathVariable("postId") Long postId,
-//                           @RequestParam("userId") String userId, Model model){
+  public String updatePost(
+      @PathVariable("post_type_id") Long postTypeId,
+      @PathVariable("postId") Long postId,
+      HttpSession session,
+      Model model) {
+    //  public String updatePost(@PathVariable("post_type_id") Long postTypeId,
+    //                           @PathVariable("postId") Long postId,
+    //                           @RequestParam("userId") String userId, Model model){
     String userId = (String) session.getAttribute("userId");
     Post post = postService.getPostByPostTypeIdAndPostId(postTypeId, postId).toPost();
     List<ImageDto> imageList = post.getImages().stream().map(ImageDto::fromImage).toList();
@@ -108,7 +117,9 @@ public class PostController {
     post.setCategories(categories);
 
     UserDto user =
-        userService.getUserById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저는 찾을 수 없습니다."));
+        userService
+            .getUserById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 유저는 찾을 수 없습니다."));
 
     model.addAttribute("post", post);
     model.addAttribute("postTypeId", postTypeId);
@@ -134,18 +145,18 @@ public class PostController {
   }
 
   @PostMapping("/{post_type_id}/post/{postId}/edit")
-  public String update(@PathVariable("post_type_id") Long postTypeId,
-                       @PathVariable("postId") Long postId,
-                       @RequestParam("title") String title,
-                       @RequestParam("content") String content,
-                       @RequestParam("categories") List<String> categories, // 예시로 String 리스트 사용
-                       @RequestPart(value = "images", required = false) MultipartFile[] images,
-                       @ModelAttribute Post updatedPost){
+  public String update(
+      @PathVariable("post_type_id") Long postTypeId,
+      @PathVariable("postId") Long postId,
+      @RequestParam("title") String title,
+      @RequestParam("content") String content,
+      @RequestParam("categories") List<String> categories, // 예시로 String 리스트 사용
+      @RequestPart(value = "images", required = false) MultipartFile[] images,
+      @ModelAttribute Post updatedPost) {
     Post post = postService.getPostByPostTypeIdAndPostId(postTypeId, postId).toPost();
     post.setTitle(updatedPost.getTitle());
     post.setContent(updatedPost.getContent());
 
     return "redirect:board/" + postTypeId + "/post/" + postId;
   }
-
 }
