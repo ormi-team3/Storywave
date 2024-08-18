@@ -52,6 +52,10 @@ public class PostService {
     return postRepository.findAll(pageable);
   }
 
+  public Page<Post> getPostsByUserId(String userId, Pageable pageable) {
+    return postRepository.findByUserUserId(userId, pageable);
+  }
+
   public List<PostListDto> getPostSummaries(Long post_type_id) {
     // 사용자 정보가 포함된 게시글 리스트를 조회합니다.
     List<Post> posts = postRepository.findAll(); // 모든 게시글을 가져옵니다.
