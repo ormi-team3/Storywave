@@ -89,4 +89,34 @@ public class UserController {
     }
     return "redirect:/home";
   }
+
+  @PostMapping("/deleteAccount")
+  public String deleteAccount(HttpSession session, Model model) {
+    String userId = (String) session.getAttribute("userId");
+    if (userId == null) {
+      model.addAttribute("error", "세션에서 사용자 정보를 찾을 수 없습니다.");
+      return "error";
+    }
+    boolean isDeleted = userService.deleteUser(userId); // 유저 삭제 서비스 호출
+    if (isDeleted) {
+      session.invalidate(); // 세션 무효화
+      return "mypage/quit_finish"; // 탈퇴 완료 페이지로 리디렉션
+    } else {
+      model.addAttribute("error", "사용자 삭제에 실패했습니다.");
+      return "error";
+    }
+  }
+
+  @PostMapping("/user/delete")
+  public String deleteUser(HttpSession session) {
+    String userId = (String) session.getAttribute("userId");
+
+    // 사용자와 관련된 모든 데이터 삭제
+    userService.deleteUserAndContent(userId);
+
+    // 로그아웃 및 세션 무효화
+    session.invalidate();
+
+    return "redirect:/home";
+  }
 }

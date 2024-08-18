@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+  void deleteByUserId(String userId);
+
   Page<Post> findByUserUserId(String userId, Pageable pageable);
 
   @Query("SELECT COUNT(c) FROM Comment c WHERE c.post.id = :postId")

@@ -1,5 +1,7 @@
 package com.ormi.storywave.users;
 
+import com.ormi.storywave.comment.CommentRepository;
+import com.ormi.storywave.posts.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,24 @@ import static com.ormi.storywave.users.UserDto.fromUsers;
 @Service
 public class UserService {
   private final UserRepository userRepository;
+
+  @Autowired
+  private PostRepository postRepository;
+
+  @Autowired
+  private CommentRepository commentRepository;
+
+  @Transactional
+  public void deleteUserAndContent(String userId) {
+    // 사용자가 작성한 글 모두 삭제
+    postRepository.deleteByUserId(userId);
+
+    // 사용자가 작성한 댓글 모두 삭제
+    commentRepository.deleteByUserId(userId);
+
+    // 사용자 삭제
+    userRepository.deleteById(userId);
+  }
 
   @Autowired
   public UserService(UserRepository userRepository) {

@@ -42,10 +42,10 @@
     <div class="confirm">
         <p>정말로 탈퇴하시겠습니까?</p>
         <p>탈퇴 시 작성한 게시물과 댓글도 모두 삭제됩니다.</p>
-        <div class="button-group">
-            <button class="cancel-btn" th:onclick="history.back()">취소하기</button>
-            <button class="confirm-btn" th:onclick="|location.href='@{/quit_success}'|">탈퇴하기</button>
-        </div>
+        <form class="button-group" action="/user/deleteAccount" method="POST">
+            <button class="cancel-btn" type="button" onclick="history.back()">취소하기</button>
+            <button type="submit">탈퇴하기</button>
+        </form>
     </div>
 </main>
 </body>
