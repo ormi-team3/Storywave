@@ -13,7 +13,12 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-  void deleteByUserId(String userId);
+  @Transactional
+  @Modifying
+  @Query("DELETE FROM Post p WHERE p.user.userId = :userId")
+  void deleteByUserId(@Param("userId") String userId);
+
+  List<Post> findByUser_UserId(String userId);
 
   Page<Post> findByUserUserId(String userId, Pageable pageable);
 

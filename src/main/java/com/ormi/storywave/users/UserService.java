@@ -1,6 +1,8 @@
 package com.ormi.storywave.users;
 
+import com.ormi.storywave.board.BoardService;
 import com.ormi.storywave.comment.CommentRepository;
+import com.ormi.storywave.posts.Post;
 import com.ormi.storywave.posts.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,21 +26,33 @@ public class UserService {
   @Autowired
   private CommentRepository commentRepository;
 
-  @Transactional
-  public void deleteUserAndContent(String userId) {
-    // 사용자가 작성한 글 모두 삭제
-    postRepository.deleteByUserId(userId);
-
-    // 사용자가 작성한 댓글 모두 삭제
-    commentRepository.deleteByUserId(userId);
-
-    // 사용자 삭제
-    userRepository.deleteById(userId);
-  }
+  @Autowired
+  private BoardService boardService;
 
   @Autowired
   public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
+  }
+
+  public void deleteUserComments(String userId) {
+    commentRepository.deleteByUser_UserId(userId);
+  }
+
+  @Transactional
+  public void deleteUserAndContent(String userId) {
+    // 사용자가 작성한 글 모두 삭제
+    List<Post> userPosts = postRepository.findByUser_UserId(userId);
+    for (Post post : userPosts) {
+      // 게시글과 연관된 데이터 삭제 (댓글, 이미지 등)
+      commentRepository.deleteByPost(post);
+      postRepository.delete(post);
+    }
+
+    // 사용자가 작성한 댓글 모두 삭제
+    commentRepository.deleteByUser_UserId(userId);
+
+    // 사용자 삭제
+    userRepository.deleteById(userId);
   }
 
   public List<UserDto> getAllUsers() {
